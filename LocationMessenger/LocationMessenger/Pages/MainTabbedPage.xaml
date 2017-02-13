@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:LocationMessenger"
              xmlns:pages="clr-namespace:LocationMessenger.Pages;assembly=LocationMessenger"
              x:Class="LocationMessenger.Pages.MainTabbedPage">
-  <pages:MapPage/>
+  <pages:MapPage Title="Map"/>
   <pages:HistoryPage/>
 </TabbedPage>
