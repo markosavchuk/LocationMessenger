@@ -8,104 +8,41 @@ using System.Text;
 using System.Threading.Tasks;
 using LocationMessenger.Models;
 using static LocationMessenger.Models.Person.GenderEnum;
+using LocationMessenger.FakeData;
 
 namespace LocationMessenger.ViewModels
 {
     public class UserDateViewModel : INotifyPropertyChanged
     {
+        public ObservableCollection<Person> Contacts { get; set; }
+        public ObservableCollection<ChatListViewModel> Chats { get; set; }
+        public Person Me { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public UserDateViewModel()
         {
-            FakeData fakeData = new FakeData();
-            Contacts = new ObservableCollection<Person>(fakeData.Contacts);
+            Me = FakeData.FakeData.Me;
+            Contacts = new ObservableCollection<Person>(FakeData.FakeData.Contacts);
+            Chats = new ObservableCollection<ChatListViewModel>();
+            /*for (int i = 0; i < 10; i++)
+            {*/
+                foreach (var chat in FakeData.FakeData.Chats)
+                {
+                    var member = chat.Members.FirstOrDefault(m => m != Me);
+                    Chats.Add(new ChatListViewModel()
+                    {
+                        Id = chat.Id,
+                        ChatName = (member.Name ?? "") + " " + (member.Surname ?? ""),
+                        LastMessage = chat.Messages.Last() != null ? chat.Messages.Last().Text : "Chat is empty..."
+                    });
+                }
+            //}
         }
-
-        public ObservableCollection<Person> Contacts { get; set; }
-        public string Test { get { return "Test"; } }
-        
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    // fake data tmp
-    public class FakeData
-    {
-        public List<Person> Contacts => new List<Person>()
-        {
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Uthyr",
-                Surname = "Bennie",
-                Gender = Male
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Seneca",
-                Surname = "Pollux",
-                Gender = Male
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Boguslav",
-                Surname = "Herodion",
-                Gender = Male
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Paolino",
-                Surname = "Isamu",
-                Gender = Male
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Surname = "Maruf",
-                Name = "Souta",
-                Gender = Male
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Diana",
-                Surname = "Monika",
-                Gender = Female
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Rachel",
-                Surname = "Guiomar",
-                Gender = Female
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Eliora",
-                Surname = "Khurshid",
-                Gender = Female
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Violetta",
-                Surname = "Raluca",
-                Gender = Female
-            },
-            new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = "Yamuna",
-                Surname = "Ogechi",
-                Gender = Female
-            }
-        };
     }
 }

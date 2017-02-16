@@ -11,7 +11,8 @@ namespace LocationMessenger.Models
         public enum GenderEnum
         {
             Male,
-            Female
+            Female,
+            Other
         }
 
         public class ImagePerson

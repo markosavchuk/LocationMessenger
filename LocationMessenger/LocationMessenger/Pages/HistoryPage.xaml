@@ -3,10 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LocationMessenger.Pages.HistoryPage"
              Title="History">
-  <ListView  x:Name="lstView" ItemsSource="{Binding Contacts}">
+  <ListView  x:Name="lstView" ItemsSource="{Binding Chats}">
 			<ListView.ItemTemplate>
 				<DataTemplate>
-          <ImageCell Text="{Binding Name}" Detail="{Binding Surname}" >
+          <ImageCell Text="{Binding ChatName}" Detail="{Binding LastMessage}" >
+            <ImageCell.ContextActions>
+              <MenuItem Text="Delete" />
+            </ImageCell.ContextActions>
           </ImageCell>
 				</DataTemplate>
 			</ListView.ItemTemplate>
