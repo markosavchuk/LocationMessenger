@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:LocationMessenger"
+             xmlns:pages="clr-namespace:LocationMessenger.Views;assembly=LocationMessenger"
+             x:Class="LocationMessenger.Views.MainTabbedPage"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True">
+  <pages:MapPage/>
+  <pages:HistoryPage/>
+</TabbedPage>

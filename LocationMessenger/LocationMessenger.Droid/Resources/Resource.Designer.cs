@@ -2873,9 +2873,6 @@ namespace LocationMessenger.Droid
 			// aapt resource value: 0x7f0a001e
 			public const int showTitle = 2131361822;
 			
-			// aapt resource value: 0x7f0a00a3
-			public const int sliding_tabs = 2131361955;
-			
 			// aapt resource value: 0x7f0a0077
 			public const int snackbar_action = 2131361911;
 			
@@ -2935,9 +2932,6 @@ namespace LocationMessenger.Droid
 			
 			// aapt resource value: 0x7f0a0053
 			public const int title_template = 2131361875;
-			
-			// aapt resource value: 0x7f0a00a4
-			public const int toolbar = 2131361956;
 			
 			// aapt resource value: 0x7f0a003d
 			public const int top = 2131361853;
@@ -3211,12 +3205,6 @@ namespace LocationMessenger.Droid
 			
 			// aapt resource value: 0x7f030036
 			public const int support_simple_spinner_dropdown_item = 2130903094;
-			
-			// aapt resource value: 0x7f030037
-			public const int Tabbar = 2130903095;
-			
-			// aapt resource value: 0x7f030038
-			public const int Toolbar = 2130903096;
 			
 			static Layout()
 			{
