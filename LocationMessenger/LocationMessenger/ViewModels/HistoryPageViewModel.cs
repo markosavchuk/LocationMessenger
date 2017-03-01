@@ -6,29 +6,45 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using LocationMessenger.Models;
 using LocationMessenger.ViewModels.ListViews;
+using Prism.Navigation;
 
 namespace LocationMessenger.ViewModels
 {
     public class HistoryPageViewModel : BindableBase
     {
-        private string _title = "History";
-        private ObservableCollection<ChatListViewModel> _chats;
+        private readonly INavigationService _navigationService;
+
         private Person _me;
 
+        private string _title = "History";
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
 
+        private ObservableCollection<ChatListViewModel> _chats;
         public ObservableCollection<ChatListViewModel> Chats
         {
             get { return _chats; }
             set { SetProperty(ref _chats, value); }
         }
 
-        public HistoryPageViewModel()
+        public ChatListViewModel ChatSelected
         {
+            set
+            {
+                if (value != null)
+                {
+                    NavigateToChat(value.Id);
+                }
+            }
+        }
+
+        public HistoryPageViewModel(INavigationService navigationService)
+        {
+            _navigationService = navigationService;
+
             _me = FakeData.FakeData.Me;
 
             _chats = new ObservableCollection<ChatListViewModel> ();
@@ -42,6 +58,11 @@ namespace LocationMessenger.ViewModels
                     LastMessage = chat.Messages.Last() != null ? chat.Messages.Last().Text : "Chat is empty..."
                 });
             }
+        }
+
+        private void NavigateToChat(string id)
+        {
+            _navigationService.NavigateAsync("ChatPage?id="+id);
         }
     }
 }

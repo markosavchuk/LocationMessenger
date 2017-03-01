@@ -27,6 +27,7 @@ namespace LocationMessenger
             Container.RegisterTypeForNavigation<MainTabbedPage>();
             Container.RegisterTypeForNavigation<HistoryPage>();
             Container.RegisterTypeForNavigation<MapPage>();
+            Container.RegisterTypeForNavigation<ChatPage>();
         }
     }
 }

@@ -5,10 +5,10 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
-  <ListView  x:Name="lstView" ItemsSource="{Binding Chats}">
+  <ListView  x:Name="lstView" ItemsSource="{Binding Chats}" SelectedItem="{Binding ChatSelected}">
 			<ListView.ItemTemplate>
 				<DataTemplate>
-          <ImageCell Text="{Binding ChatName}" Detail="{Binding LastMessage}" >
+          <ImageCell Text="{Binding ChatName}" Detail="{Binding LastMessage}">
             <ImageCell.ContextActions>
               <MenuItem Text="Delete" />
             </ImageCell.ContextActions>
