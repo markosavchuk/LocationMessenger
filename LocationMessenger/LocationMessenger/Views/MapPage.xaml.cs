@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using LocationMessenger.ViewModels;
+using LocationMessenger.Views.CustomControls;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 
@@ -15,18 +17,15 @@ namespace LocationMessenger.Views
         {
             InitializeComponent();
 
-            var map = new Map(
-                MapSpan.FromCenterAndRadius(
-                        new Position(37, -122), Distance.FromMiles(0.3)))
+            var viewmodel = BindingContext as MapPageViewModel;
+            if (viewmodel != null)
             {
-                IsShowingUser = true,
-                HeightRequest = 100,
-                WidthRequest = 960,
-                VerticalOptions = LayoutOptions.FillAndExpand
-            };
-            var stack = new StackLayout { Spacing = 0};
-            stack.Children.Add(map);
-            Content = stack;
+                MapMsg.CustomPins = viewmodel.Pins;
+                MapMsg.MessageClicked = viewmodel.MessageClicked;
+            }
+
+            MapMsg.MoveToRegion(MapSpan.FromCenterAndRadius(
+              new Position(49.834813, 23.997578), Distance.FromMiles(1.0)));
         }
     }
 }

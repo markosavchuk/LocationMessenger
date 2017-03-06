@@ -6,6 +6,6 @@
              x:Class="LocationMessenger.Views.MainTabbedPage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True">
-  <pages:HistoryPage/>
   <pages:MapPage/>
+  <pages:HistoryPage/>
 </TabbedPage>

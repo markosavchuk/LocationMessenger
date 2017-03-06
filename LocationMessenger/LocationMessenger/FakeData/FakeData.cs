@@ -26,21 +26,29 @@ namespace LocationMessenger.FakeData
                 Id = Guid.NewGuid().ToString(),
                 Name = "Uthyr",
                 Surname = "Bennie",
-                Gender = Male
+                Gender = Male,
+                Image = new Person.ImagePerson()
+                {
+                    Url = @"man1"
+                }
             },
             new Person()
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Seneca",
                 Surname = "Pollux",
-                Gender = Male
+                Gender = Male,
+                Image = new Person.ImagePerson()
+                {
+                    Url = "man2"
+                }
             },
             new Person()
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Boguslav",
                 Surname = "Herodion",
-                Gender = Male
+                Gender = Male,
             },
             new Person()
             {
@@ -61,7 +69,11 @@ namespace LocationMessenger.FakeData
                 Id = Guid.NewGuid().ToString(),
                 Name = "Diana",
                 Surname = "Monika",
-                Gender = Female
+                Gender = Female,
+                Image = new Person.ImagePerson()
+                {
+                    Url = "woman1"
+                }
             },
             new Person()
             {
@@ -106,21 +118,24 @@ namespace LocationMessenger.FakeData
                         Id = Guid.NewGuid().ToString(),
                         Date = DateTime.Parse("2016-02-08 14:40:52"),
                         Owner = Contacts[0],
-                        Text = "Hi there"
+                        Text = "Hi there",
+                        Location = new Location(49.834813, 23.997578)
                     },
                     new Message()
                     {
                         Id = Guid.NewGuid().ToString(),
                         Date = DateTime.Parse("2016-02-09 12:40:52"),
                         Owner = Contacts[1],
-                        Text = String.Format("Glad to here you {0}",Contacts[0].Name)
+                        Text = String.Format("Glad to here you {0}",Contacts[0].Name),
+                        Location = new Location(49.841511, 24.029507)
                     },
                     new Message()
                     {
                         Id = Guid.NewGuid().ToString(),
                         Date = DateTime.Parse("2016-02-09 18:42:52"),
                         Owner = Contacts[1],
-                        Text = String.Format("Hope you will catch this message :)")
+                        Text = String.Format("Hope you will catch this message :)"),
+                        Location = new Location(49.839380, 24.019636)
                     }
                 }
             },
@@ -135,21 +150,24 @@ namespace LocationMessenger.FakeData
                         Id = Guid.NewGuid().ToString(),
                         Date = DateTime.Parse("2016-02-08 14:40:52"),
                         Owner = Contacts[0],
-                        Text = "Heyy, finally you got here!!"
+                        Text = "Heyy, finally you got here!!",
+                        Location = new Location(49.823878, 24.024872)
                     },
                     new Message()
                     {
                         Id = Guid.NewGuid().ToString(),
                         Date = DateTime.Parse("2016-02-09 12:40:52"),
                         Owner = Contacts[0],
-                        Text = String.Format("Call me here plese")
+                        Text = String.Format("Call me here plese"),
+                        Location = new Location(49.832903, 24.055900)
                     },
                     new Message()
                     {
                         Id = Guid.NewGuid().ToString(),
                         Date = DateTime.Parse("2016-02-09 18:42:52"),
                         Owner = Contacts[1],
-                        Text = String.Format("See you tomorrow here :)")
+                        Text = String.Format("See you tomorrow here :)"),
+                        Location = new Location(49.837027, 24.001912)
                     }
                 }
             }

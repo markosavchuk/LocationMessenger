@@ -6,12 +6,12 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   IgnorableNamespaces="uap mp">
 
-  <Identity
+  <IdMessageentity
     Name="d2910bd8-b010-4b6a-9d06-d8172721d676"
     Publisher="CN=Marko"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="d2910bd8-b010-4b6a-9d06-d8172721d676" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdMessageentity PhoneProductIdMessage="d2910bd8-b010-4b6a-9d06-d8172721d676" PhonePublisherIdMessage="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>LocationMessenger.UWP</DisplayName>
@@ -28,7 +28,7 @@
   </Resources>
 
   <Applications>
-    <Application Id="App"
+    <Application IdMessage="App"
       Executable="$targetnametoken$.exe"
       EntryPoint="LocationMessenger.UWP.App">
       <uap:VisualElements
