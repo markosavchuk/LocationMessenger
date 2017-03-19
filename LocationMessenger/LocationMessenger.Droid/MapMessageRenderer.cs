@@ -4,20 +4,23 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
+using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Java.Net;
 using Java.Util;
 using LocationMessenger.Droid;
 using LocationMessenger.ViewModels;
 using Xamarin.Forms;
 using LocationMessenger.Views.CustomControls;
+using Square.Picasso;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Android;
 using Xamarin.Forms.Platform.Android;
@@ -67,13 +70,19 @@ namespace LocationMessenger.Droid
 
                 foreach (var pin in _customPins)
                 {
-                    var marker = new MarkerOptions();
+                    var markerOptions = new MarkerOptions();
                     
-                    marker.SetPosition(new LatLng(pin.Pin.Position.Latitude, pin.Pin.Position.Longitude));
-                    marker.SetTitle(pin.AuthorName);
-                    marker.SetSnippet(pin.VisibleMessage);
-                    marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.icon));
-                    _map.AddMarker(marker);
+                    markerOptions.SetPosition(new LatLng(pin.Pin.Position.Latitude, pin.Pin.Position.Longitude));
+                    markerOptions.SetTitle(pin.AuthorName);
+                    markerOptions.SetSnippet(pin.VisibleMessage);
+                    var marker = _map.AddMarker(markerOptions);
+
+                    var picassoMarker = new PicassoMarker(marker);
+                    Picasso.With(Context)
+                        .Load(pin.UrlImage)
+                        .Resize(100,100)
+                        .Placeholder(Resource.Drawable.icon)
+                        .Into(picassoMarker);                    
                 }
                 _isDrawn = true;
             }

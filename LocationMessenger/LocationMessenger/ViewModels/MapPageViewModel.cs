@@ -58,9 +58,16 @@ namespace LocationMessenger.ViewModels
             MessageClicked = new DelegateCommand<string>(NavigateToChat);
         }
 
-        private void NavigateToChat(string id)
+        private void NavigateToChat(string idMessage)
         {
-            _navigationService.NavigateAsync("ChatPage?id=" + id);
+            var chats = FakeData.FakeData.Chats;
+            var b = chats.Any(c => c.Messages.Any(m => m.Id.Equals(idMessage)));
+            if (FakeData.FakeData.Chats.Any(c => c.Messages.Any(m => m.Id.Equals(idMessage))))
+            {
+                var idChat = FakeData.FakeData.Chats
+                    .First(c => c.Messages.Exists(m => m.Id.Equals(idMessage))).Id;
+                _navigationService.NavigateAsync("ChatPage?idMessage=" + idChat);
+            }            
         }
     }
 }
