@@ -36,6 +36,7 @@ namespace LocationMessenger.ViewModels
             _navigationService = navigationService;
 
             _pins = new ObservableCollection<MapPinViewModel>();
+            var chats = FakeData.FakeData.Chats;
             foreach (var chat in FakeData.FakeData.Chats)
             {
                 foreach (var message in chat.Messages)
@@ -66,7 +67,7 @@ namespace LocationMessenger.ViewModels
             {
                 var idChat = FakeData.FakeData.Chats
                     .First(c => c.Messages.Exists(m => m.Id.Equals(idMessage))).Id;
-                _navigationService.NavigateAsync("ChatPage?idMessage=" + idChat);
+                _navigationService.NavigateAsync("ChatPage?idChat=" + idChat);
             }            
         }
     }

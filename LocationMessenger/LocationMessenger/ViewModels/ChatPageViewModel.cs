@@ -30,9 +30,9 @@ namespace LocationMessenger.ViewModels
 
         public void OnNavigatedTo(NavigationParameters parameters)
         {
-            if (parameters.ContainsKey("id"))
+            if (parameters.ContainsKey("idChat"))
             {
-                var id = parameters["id"] as string;
+                var id = parameters["idChat"] as string;
                 if (id != null)
                 {
                     Id = id;
