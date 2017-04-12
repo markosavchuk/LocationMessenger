@@ -4,19 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LocationMessenger.Views;
+using Prism.Modularity;
 using Prism.Unity;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace LocationMessenger
 {
     public class App : PrismApplication
     {
-        /*public App()
-        {
-            //InitializeComponent();
-
-            MainPage = new Views.MapPage();
-        }*/
         protected override void OnInitialized()
         {
             NavigationService.NavigateAsync("MainTabbedPage");
@@ -28,6 +24,8 @@ namespace LocationMessenger
             Container.RegisterTypeForNavigation<HistoryPage>();
             Container.RegisterTypeForNavigation<MapPage>();
             Container.RegisterTypeForNavigation<ChatPage>();
+            Container.RegisterTypeForNavigation<ChooseLocationMapPage>();
+			Container.RegisterTypeForNavigation<MainNavigationPage>();
         }
     }
 }

@@ -1,0 +1,21 @@
+﻿<Properties StartupConfiguration="{9BF20B56-ED21-4E10-9314-4FA1C0496B61}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="LocationMessenger/LocationMessenger/ViewModels/MapPageViewModel.cs">
+    <Files>
+      <File FileName="LocationMessenger/LocationMessenger/App.cs" Line="18" Column="46" />
+      <File FileName="LocationMessenger/LocationMessenger/Module.cs" Line="21" Column="19" />
+      <File FileName="LocationMessenger/LocationMessenger/ViewModels/ChatPageViewModel.cs" Line="19" Column="63" />
+      <File FileName="LocationMessenger/LocationMessenger/ViewModels/ChooseLocationMapPageViewModel.cs" Line="38" Column="18" />
+      <File FileName="LocationMessenger/LocationMessenger/Views/MainTabbedPage.xaml" Line="9" Column="26" />
+      <File FileName="LocationMessenger/LocationMessenger/Views/MainNavigationPage.xaml" Line="4" Column="57" />
+      <File FileName="LocationMessenger/LocationMessenger/ViewModels/MapPageViewModel.cs" Line="62" Column="5" />
+      <File FileName="LocationMessenger/LocationMessenger/Views/MapPage.xaml" Line="10" Column="21" />
+      <File FileName="LocationMessenger/LocationMessenger/ViewModels/MainTabbedPageViewModel.cs" Line="17" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.LocationMessenger.Droid PreferredExecutionTarget="Android.192.168.56.101:5555" />
+</Properties>

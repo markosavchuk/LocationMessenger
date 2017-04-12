@@ -5,7 +5,8 @@
              xmlns:pages="clr-namespace:LocationMessenger.Views;assembly=LocationMessenger"
              x:Class="LocationMessenger.Views.MainTabbedPage"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
-             prism:ViewModelLocator.AutowireViewModel="True">
+             prism:ViewModelLocator.AutowireViewModel="True"
+			 Title="{Binding Title}">
   <pages:MapPage/>
   <pages:HistoryPage/>
 </TabbedPage>

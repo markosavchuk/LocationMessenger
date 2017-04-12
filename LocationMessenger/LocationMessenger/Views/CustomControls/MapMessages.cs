@@ -12,12 +12,26 @@ namespace LocationMessenger.Views.CustomControls
 {
     public class MapMessages : Map
     {
+		public event EventHandler UpdatePinsEvent;
+		public event EventHandler<string> MessageClicked;
+
         public ObservableCollection<MapPinViewModel> CustomPins { get; set; }
-        public DelegateCommand<string> MessageClicked { get; set; }
 
         public MapMessages()
         {
            
         }
+
+		public void UpdatePins()
+		{
+			if (UpdatePinsEvent != null)
+				UpdatePinsEvent(null, EventArgs.Empty);
+		}
+
+		public void ClickOnMessage(string id)
+		{
+			if (MessageClicked != null)
+				MessageClicked(null, id);
+		}
     }
 }

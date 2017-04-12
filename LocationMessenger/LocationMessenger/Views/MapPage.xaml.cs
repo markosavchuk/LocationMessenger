@@ -13,15 +13,19 @@ namespace LocationMessenger.Views
 {
     public partial class MapPage : ContentPage
     {
+		MapPageViewModel _viewmodel;
+
         public MapPage()
         {
             InitializeComponent();
 
-            var viewmodel = BindingContext as MapPageViewModel;
-            if (viewmodel != null)
+            _viewmodel = BindingContext as MapPageViewModel;
+            if (_viewmodel != null)
             {
-                MapMsg.CustomPins = viewmodel.Pins;
-                MapMsg.MessageClicked = viewmodel.MessageClicked;
+                MapMsg.CustomPins = _viewmodel.Pins;
+				MapMsg.MessageClicked += (sender, e) => _viewmodel.NavigateToClickedChat(e);
+
+				_viewmodel.PinsChanged += (sender, e) => MapMsg.UpdatePins();
             }
 
             MapMsg.MoveToRegion(MapSpan.FromCenterAndRadius(

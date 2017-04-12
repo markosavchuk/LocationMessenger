@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LocationMessenger.Models;
+using System.ComponentModel;
 using static LocationMessenger.Models.Person.GenderEnum;
 
 namespace LocationMessenger.FakeData
 {
-    public static class FakeData
+	public class FakeData
     {
         static FakeData()
         {
+			
             Me = new Person()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -24,7 +27,7 @@ namespace LocationMessenger.FakeData
                 }
             };
 
-            Contacts = new List<Person>()
+			Contacts = new ObservableCollection<Person>()
             {
                 new Person()
                 {
@@ -110,7 +113,7 @@ namespace LocationMessenger.FakeData
                 }
             };
 
-            Chats = new List<Chat>()
+			Chats = new ObservableCollection<Chat>()
             {
                 new Chat()
                 {
@@ -179,11 +182,19 @@ namespace LocationMessenger.FakeData
             };
         }
 
+		public static event EventHandler ChatsChaged;
+
         // actually not so fake :)
         public static Person Me;
 
-        public static List<Person> Contacts;
+		public static ObservableCollection<Person> Contacts;
 
-        public static List<Chat> Chats;
-    }
+		public static ObservableCollection<Chat> Chats;
+
+		public static void RaiseChangedChats()
+		{
+			if (ChatsChaged != null)
+				ChatsChaged(null, EventArgs.Empty);
+		}
+	}
 }

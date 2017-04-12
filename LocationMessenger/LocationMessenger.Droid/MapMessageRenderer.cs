@@ -32,7 +32,6 @@ namespace LocationMessenger.Droid
     class MapMessageRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter, IOnMapReadyCallback
     {
 		GoogleMap _map;
-        ObservableCollection<MapPinViewModel> _customPins;
         bool _isDrawn;
         MapMessages _formsMap;
 
@@ -48,8 +47,9 @@ namespace LocationMessenger.Droid
             if (e.NewElement != null)
             {
                 _formsMap = (MapMessages)e.NewElement;
-                _customPins = _formsMap.CustomPins;
                 ((MapView)Control).GetMapAsync(this);
+
+				_formsMap.UpdatePinsEvent += (sender, args) => UpdateMarkers();
             }
         }
 
@@ -58,6 +58,7 @@ namespace LocationMessenger.Droid
             _map = googleMap;
             _map.InfoWindowClick += OnInfoWindowClick;
             _map.SetInfoWindowAdapter(this);
+            _map.UiSettings.MapToolbarEnabled = false;
         }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -66,24 +67,7 @@ namespace LocationMessenger.Droid
 
             if (e.PropertyName.Equals("VisibleRegion") && !_isDrawn)
             {
-                _map.Clear();
-
-                foreach (var pin in _customPins)
-                {
-                    var markerOptions = new MarkerOptions();
-                    
-                    markerOptions.SetPosition(new LatLng(pin.Pin.Position.Latitude, pin.Pin.Position.Longitude));
-                    markerOptions.SetTitle(pin.AuthorName);
-                    markerOptions.SetSnippet(pin.VisibleMessage);
-                    var marker = _map.AddMarker(markerOptions);
-
-                    var picassoMarker = new PicassoMarker(marker);
-                    Picasso.With(Context)
-                        .Load(pin.UrlImage)
-                        .Resize(100,100)
-                        .Placeholder(Resource.Drawable.icon)
-                        .Into(picassoMarker);                    
-                }
+				UpdateMarkers();
                 _isDrawn = true;
             }
         }
@@ -100,13 +84,10 @@ namespace LocationMessenger.Droid
 
         void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
         {
-            var customPin = GetCustomPin(e.Marker);
-            if (customPin == null)
-            {
-                throw new Exception("Custom pin not found");
-            }
-
-            _formsMap?.MessageClicked.Execute(customPin.IdMessage);
+			var customPin = GetCustomPin(e.Marker);
+			if (customPin == null)
+			{
+				throw new Exception("Custom pin not found"); 			} 			_formsMap?.ClickOnMessage(customPin.IdMessage);
         }
 
         public View GetInfoContents(Marker marker)
@@ -122,7 +103,7 @@ namespace LocationMessenger.Droid
         MapPinViewModel GetCustomPin(Marker annotation)
         {
             var position = new Position(annotation.Position.Latitude, annotation.Position.Longitude);
-            foreach (var pin in _customPins)
+            foreach (var pin in _formsMap.CustomPins)
             {
                 if (pin.Pin.Position == position)
                 {
@@ -131,5 +112,30 @@ namespace LocationMessenger.Droid
             }
             return null;
         }
+
+		private void UpdateMarkers()
+		{
+			if (_map == null)
+				return;
+			
+			_map.Clear();
+
+			foreach (var pin in _formsMap.CustomPins)
+			{
+				var markerOptions = new MarkerOptions();
+
+				markerOptions.SetPosition(new LatLng(pin.Pin.Position.Latitude, pin.Pin.Position.Longitude));
+				markerOptions.SetTitle(pin.AuthorName);
+				markerOptions.SetSnippet(pin.VisibleMessage);
+				var marker = _map.AddMarker(markerOptions);
+
+				var picassoMarker = new PicassoMarker(marker);
+				Picasso.With(Context)
+					.Load(pin.UrlImage)
+					.Resize(100, 100)
+					.Placeholder(Resource.Drawable.icon)
+					.Into(picassoMarker);
+			}
+		}
     }
 }

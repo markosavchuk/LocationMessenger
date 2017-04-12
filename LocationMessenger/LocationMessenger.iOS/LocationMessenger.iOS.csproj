@@ -159,7 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LocationMessenger\LocationMessenger.csproj">
-      <Project>{bb67bf82-6f44-4b2f-a083-882163c13c77}</Project>
+      <Project>{045F77D9-FE20-4C44-8949-3574AB81F9B8}</Project>
       <Name>LocationMessenger</Name>
     </ProjectReference>
   </ItemGroup>

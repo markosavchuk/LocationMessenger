@@ -2,8 +2,30 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="LocationMessenger.Views.ChatPage"
              Title="Binding Title">
-  <Label Text="{Binding Id}" HorizontalOptions="Center" VerticalOptions="Center"/>
+  <StackLayout Orientation="Vertical">
+    <ListView  x:Name="LstView" ItemsSource="{Binding Messages}"  HasUnevenRows="True" ItemSelected="OnItemSelected" SeparatorColor="Black">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <ViewCell Appearing="OnAppearing" ChildAdded="OnChildListViewAdded">
+            <StackLayout Orientation="Vertical" HorizontalOptions="{Binding Alligment}" WidthRequest="300">
+              <Frame HasShadow="True" BackgroundColor="Aqua">
+                <Label Text="{Binding Message.Text}" FontSize="16" HorizontalOptions="{Binding Alligment}"></Label>
+              </Frame>
+              <Frame HasShadow="True" BackgroundColor="Aqua">
+                <Label Text="{Binding Address}" FontAttributes="Bold" FontSize="16" HorizontalOptions="{Binding Alligment}"></Label>
+              </Frame>
+              <maps:Map HeightRequest="200"  HasZoomEnabled="False"></maps:Map>
+            </StackLayout>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+    <Button Text="{Binding ButtonTitle}" IsVisible="{Binding IsNotChoosedLocation}" Command="{Binding ChooseLocation}" />
+    <Label Text="{Binding ChoosedAddress}" HorizontalTextAlignment="Center" FontSize="14" IsVisible="True"/>
+    <Entry IsVisible="True" Placeholder="Type..." TextChanged="Entry_OnTextChanged" IsEnabled="True"></Entry>
+  </StackLayout>
 </ContentPage>

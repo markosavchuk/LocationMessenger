@@ -10,7 +10,7 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<application android:label="LocationMessenger.Droid">
 		<!-- Put your Google Maps V2 API Key here. -->
-		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDdNemzN9oZj7Dsu8PnFrqxfruid9QVm2g" />
+		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBohYybW52TjqqUq0kOxn1aOfuYw66o1UY" />
 		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 	</application>
 </manifest>

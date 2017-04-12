@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+             xmlns:customControls="clr-namespace:LocationMessenger.Views.CustomControls;assembly=LocationMessenger"
+             x:Class="LocationMessenger.Views.ChooseLocationMapPage">
+  <customControls:ChooseLocationMap x:Name="ChooseMap" Tapped="ChooseLocationMap"></customControls:ChooseLocationMap>
+</ContentPage>
