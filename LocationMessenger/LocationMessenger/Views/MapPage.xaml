@@ -7,7 +7,8 @@
              xmlns:customControls="clr-namespace:LocationMessenger.Views.CustomControls;assembly=LocationMessenger"
              xmlns:local="clr-namespace:LocationMessenger;assembly=LocationMessenger"
              prism:ViewModelLocator.AutowireViewModel="True"
-             Title="{Binding Title}">
+             Title="{Binding Title}"> 
+
   <customControls:MapMessages
             x:Name="MapMsg"
             IsShowingUser="true"

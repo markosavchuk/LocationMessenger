@@ -57,7 +57,7 @@ namespace LocationMessenger.ViewModels
 
         private void NavigateToChat(string id)
         {
-            _navigationService.NavigateAsync("ChatPage?idChat=" + id);
+			_navigationService.NavigateAsync("ChatPage?idChat=" + id, useModalNavigation:false);
         }
 
 		private void FillChats()

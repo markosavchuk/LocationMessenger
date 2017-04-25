@@ -47,10 +47,10 @@ namespace LocationMessenger.ViewModels
 
         private void ChooseLocation(Position position)
         {
+			
             var param = new NavigationParameters {{"position", position}};
-            _navigationService.NavigateAsync($"ChatPage?idChat={_id}", param, true);
-
-			//_navigationService.NavigateAsync("MainNavigationPage/ChatPage");
+			//_navigationService.GoBackAsync(param, true);
+			_navigationService.NavigateAsync($"ChatPage?idChat={_id}", param, useModalNavigation: false);
         }
 	}
 }

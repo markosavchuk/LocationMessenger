@@ -6,7 +6,9 @@ namespace LocationMessenger.Views
     {
         public MainTabbedPage()
         {
-            InitializeComponent();
+			NavigationPage.SetHasNavigationBar(this, false);
+
+			InitializeComponent();
         }
     }
 }

@@ -60,7 +60,6 @@ namespace LocationMessenger.ViewModels
                 var idChat = FakeData.FakeData.Chats
                     .First(c => c.Messages.Exists(m => m.Id.Equals(idMessage))).Id;
 
-				//_moduleManager.LoadModule("Module");
 				_navigationService.NavigateAsync("ChatPage?idChat=" + idChat, useModalNavigation:false);
             }            
         }

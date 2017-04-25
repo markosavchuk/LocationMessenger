@@ -30,6 +30,8 @@ namespace LocationMessenger.Views
 
             MapMsg.MoveToRegion(MapSpan.FromCenterAndRadius(
               new Position(49.834813, 23.997578), Distance.FromMiles(1.0)));
+
+
         }
     }
 }

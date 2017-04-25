@@ -24,6 +24,13 @@ namespace LocationMessenger.ViewModels
         private Position? _choosedLocation;
         private string _typedMessage;
         private string _choosedAddress = "Address for message...";
+		private string _title = "Chat Page";
+
+		public string Title
+		{
+			get { return _title; }
+			set { SetProperty(ref _title, value); }
+		}
 
         public ObservableCollection<ChatListViewModel> Messages
         {
@@ -111,6 +118,17 @@ namespace LocationMessenger.ViewModels
                 if (id != null)
                 {
                     _id = id;
+
+					var members = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(id)).Members;
+					if (!members[0].Equals(FakeData.FakeData.Me))
+					{
+						Title = (members[0].Name ?? "") + " " + (members[0].Surname ?? "");
+					}
+					else
+					{
+						Title = (members[1].Name ?? "") + " " + (members[1].Surname ?? "");
+					}
+
                     var messages = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(id)).Messages;
                     foreach (var msg in messages)
                     {

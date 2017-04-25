@@ -15,7 +15,7 @@ namespace LocationMessenger
     {
         protected override void OnInitialized()
         {
-            NavigationService.NavigateAsync("MainTabbedPage");
+            NavigationService.NavigateAsync("MainNavigationPage/MainTabbedPage");
         }
 
         protected override void RegisterTypes()

@@ -11,6 +11,8 @@ namespace LocationMessenger.Views
 
         public ChooseLocationMapPage()
         {
+			NavigationPage.SetHasNavigationBar(this, false);
+
             InitializeComponent();
 
             ChooseMap.MoveToRegion(MapSpan.FromCenterAndRadius(
