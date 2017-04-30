@@ -16,6 +16,7 @@ namespace LocationMessenger.ViewModels.ListViews
         private Message _message;
         private string _address;
         private LayoutOptions _alligment;
+		private bool _isSelected;
 
         public Message Message
         {
@@ -34,5 +35,11 @@ namespace LocationMessenger.ViewModels.ListViews
             get { return _alligment; }
             set { SetProperty(ref _alligment, value); }
         }
+
+		public bool IsSelected
+		{
+			get { return _isSelected; }
+			set { SetProperty(ref _isSelected, value); }
+		}
     }
 }

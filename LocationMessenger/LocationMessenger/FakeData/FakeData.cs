@@ -144,6 +144,30 @@ namespace LocationMessenger.FakeData
                             Owner = Contacts[1],
                             Text = String.Format("Hope you will catch this message :)"),
                             Location = new Location(49.839380, 24.019636)
+                        },
+						new Message()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Date = DateTime.Parse("2016-02-09 18:42:52"),
+                            Owner = Contacts[1],
+                            Text = String.Format("2"),
+                            Location = new Location(49.839380, 24.019636)
+                        },
+						new Message()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Date = DateTime.Parse("2016-02-09 18:42:52"),
+                            Owner = Contacts[1],
+                            Text = String.Format("3"),
+                            Location = new Location(49.839380, 24.019636)
+                        },
+						new Message()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Date = DateTime.Parse("2016-02-09 18:42:52"),
+                            Owner = Contacts[1],
+                            Text = String.Format("4"),
+                            Location = new Location(49.839380, 24.019636)
                         }
                     }
                 },
@@ -178,7 +202,23 @@ namespace LocationMessenger.FakeData
                             Location = new Location(49.837027, 24.001912)
                         }
                     }
-                }
+                },
+				new Chat()
+				{
+					Id = Guid.NewGuid().ToString(),
+					Members = new List<Person>() {Me, Contacts[0]},
+                    Messages = new List<Message>()
+					{
+						new Message()
+						{
+							Id = Guid.NewGuid().ToString(),
+							Date = DateTime.Parse("2016-02-08 14:40:52"),
+							Owner = Contacts[0],
+							Text = "First",
+							Location = new Location(49.833878, 24.024872)
+						}
+					}
+				}
             };
         }
 

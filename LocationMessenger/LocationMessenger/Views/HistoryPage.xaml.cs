@@ -11,5 +11,10 @@ namespace LocationMessenger.Views
 		{
 			InitializeComponent();
 		}
+
+		void ChatSelected(object sender, Xamarin.Forms.SelectedItemChangedEventArgs e)
+		{
+			lstView.SelectedItem = null;
+		}
 	}
 }

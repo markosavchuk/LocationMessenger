@@ -1,17 +1,10 @@
 ﻿<Properties StartupConfiguration="{9BF20B56-ED21-4E10-9314-4FA1C0496B61}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="LocationMessenger/LocationMessenger/ViewModels/ChooseLocationMapPageViewModel.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="LocationMessenger/LocationMessenger/Views/ChatPage.xaml">
     <Files>
-      <File FileName="LocationMessenger/LocationMessenger/App.cs" Line="18" Column="82" />
-      <File FileName="LocationMessenger/LocationMessenger/ViewModels/HistoryPageViewModel.cs" Line="60" Column="86" />
-      <File FileName="LocationMessenger/LocationMessenger/Views/MapPage.xaml" Line="7" Column="70" />
-      <File FileName="LocationMessenger/LocationMessenger/ViewModels/MapPageViewModel.cs" Line="19" Column="9" />
-      <File FileName="LocationMessenger/LocationMessenger/Views/MainTabbedPage.xaml" Line="1" Column="1" />
-      <File FileName="LocationMessenger/LocationMessenger/Views/ChatPage.xaml" Line="18" Column="15" />
-      <File FileName="LocationMessenger/LocationMessenger/ViewModels/ChatPageViewModel.cs" Line="129" Column="74" />
-      <File FileName="LocationMessenger/LocationMessenger/Views/MapPage.xaml.cs" Line="19" Column="10" />
-      <File FileName="LocationMessenger/LocationMessenger/Views/ChooseLocationMapPage.xaml" Line="1" Column="1" />
-      <File FileName="LocationMessenger/LocationMessenger/Views/MainTabbedPage.xaml.cs" Line="9" Column="4" />
-      <File FileName="LocationMessenger/LocationMessenger/ViewModels/ChooseLocationMapPageViewModel.cs" Line="50" Column="4" />
+      <File FileName="LocationMessenger/LocationMessenger/Views/ChatPage.xaml.cs" Line="145" Column="7" />
+      <File FileName="LocationMessenger/LocationMessenger/ViewModels/ChatPageViewModel.cs" Line="89" Column="43" />
+      <File FileName="LocationMessenger/LocationMessenger/ViewModels/HistoryPageViewModel.cs" Line="30" Column="52" />
+      <File FileName="LocationMessenger/LocationMessenger/Views/ChatPage.xaml" Line="10" Column="109" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

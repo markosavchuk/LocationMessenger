@@ -49,8 +49,7 @@ namespace LocationMessenger.ViewModels
         {
 			
             var param = new NavigationParameters {{"position", position}};
-			//_navigationService.GoBackAsync(param, true);
-			_navigationService.NavigateAsync($"ChatPage?idChat={_id}", param, useModalNavigation: false);
+			_navigationService.GoBackAsync(param);
         }
 	}
 }

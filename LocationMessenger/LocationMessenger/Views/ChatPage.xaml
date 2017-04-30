@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
@@ -7,10 +7,10 @@
              x:Class="LocationMessenger.Views.ChatPage"
              Title="{Binding Title}">
   <StackLayout Orientation="Vertical">
-    <ListView  x:Name="LstView" ItemsSource="{Binding Messages}"  HasUnevenRows="True" ItemSelected="OnItemSelected" SeparatorColor="Black">
+    <ListView  x:Name="LstView" ItemsSource="{Binding Messages}" HasUnevenRows="True" SelectedItem="{Binding SelectedMessage}" ItemSelected="OnItemSelected" SeparatorColor="Black" >
       <ListView.ItemTemplate>
         <DataTemplate>
-          <ViewCell Appearing="OnAppearing" ChildAdded="OnChildListViewAdded">
+          <ViewCell Appearing="OnAppearingViewCell">
             <StackLayout Orientation="Vertical" HorizontalOptions="{Binding Alligment}" WidthRequest="300">
               <Frame HasShadow="True" BackgroundColor="Aqua">
                 <Label Text="{Binding Message.Text}" FontSize="16" HorizontalOptions="{Binding Alligment}"></Label>
@@ -18,14 +18,15 @@
               <Frame HasShadow="True" BackgroundColor="Aqua">
                 <Label Text="{Binding Address}" FontAttributes="Bold" FontSize="16" HorizontalOptions="{Binding Alligment}"></Label>
               </Frame>
-              <maps:Map HeightRequest="200"  HasZoomEnabled="False"></maps:Map>
+				<ContentView IsVisible="{Binding IsSelected}" />
             </StackLayout>
           </ViewCell>
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
-    <Button Text="{Binding ButtonTitle}" IsVisible="{Binding IsNotChoosedLocation}" Command="{Binding ChooseLocation}" />
-    <Label Text="{Binding ChoosedAddress}" HorizontalTextAlignment="Center" FontSize="14" IsVisible="True"/>
-    <Entry IsVisible="True" Placeholder="Type..." TextChanged="Entry_OnTextChanged" IsEnabled="True"></Entry>
+	<Button Text="{Binding ChooseLocationButtonTitle}" Command="{Binding ChooseLocationClick}" IsVisible="{Binding IsNotChoosedLocation}"/>
+	<Label Text="{Binding ChoosedAddress}" HorizontalTextAlignment="Center" FontSize="14" IsVisible="{Binding IsChoosedLocation}"/>
+    <Entry Placeholder="Type..." TextChanged="Entry_OnTextChanged" IsVisible="{Binding IsChoosedLocation}"></Entry>
+	<Button Text="{Binding SendButtonTitle}" Command="{Binding SendClick}" IsVisible="{Binding IsChoosedLocation}"/>
   </StackLayout>
 </ContentPage>

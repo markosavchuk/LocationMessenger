@@ -19,12 +19,15 @@ namespace LocationMessenger.ViewModels
         private readonly INavigationService _navigationService;
 
         private string _id;
-        private ObservableCollection<ChatListViewModel> _messages;
-        private string _buttonTitle = "Choose location";
-        private Position? _choosedLocation;
+		private string _chooseLocationButtonTitle = "Choose location";
+		private ObservableCollection<ChatListViewModel> _messages;
+        private Position _choosedLocation;
         private string _typedMessage;
         private string _choosedAddress = "Address for message...";
 		private string _title = "Chat Page";
+		private bool _isChoosedLocation = false;
+		private bool _isNotChoosedLocation = true;
+		private string _sendButtonTitle = "Send";
 
 		public string Title
 		{
@@ -38,29 +41,37 @@ namespace LocationMessenger.ViewModels
             set { SetProperty(ref _messages, value); }
         }
 
-        public string ButtonTitle
+		public string ChooseLocationButtonTitle
         {
-            get { return _buttonTitle; }
-            set { SetProperty(ref _buttonTitle, value); }
+            get { return _chooseLocationButtonTitle; }
+            set { SetProperty(ref _chooseLocationButtonTitle, value); }
         }
 
-        public Position? ChoosedLocation
+		public bool IsChoosedLocation
+		{
+			get { return _isChoosedLocation; }
+			set { 
+					SetProperty(ref _isChoosedLocation, value);
+					IsNotChoosedLocation = !_isChoosedLocation;
+				}
+		}
+
+		public bool IsNotChoosedLocation
+		{
+			get { return _isNotChoosedLocation; }
+			set { SetProperty(ref _isNotChoosedLocation, value); }
+		}
+
+		public string SendButtonTitle 
+		{
+			get { return _sendButtonTitle;}
+			set { SetProperty(ref _sendButtonTitle, value); }
+		}
+
+		public Position ChoosedLocation
         {
             get { return _choosedLocation; }
-            set
-            {
-                SetProperty(ref _choosedLocation, value);
-                if (_choosedLocation == null)
-                {
-                    ButtonTitle = "Choose location";
-                }
-                else
-                {
-                    ButtonTitle = "Send";
-                }
-                /*IsNotChoosedLocation = _choosedLocation == null;
-                IsChoosedLocation = !IsNotChoosedLocation;*/
-            }
+            set { SetProperty(ref _choosedLocation, value); }
         }
 
         public string ChoosedAddress
@@ -75,39 +86,56 @@ namespace LocationMessenger.ViewModels
             set { SetProperty(ref _typedMessage, value); }
         }
 
-        /*public bool IsChoosedLocation
-        {
-            get { return _isChoosedLocation; }
-            set
-            {
-                SetProperty(ref _isChoosedLocation, value);
-                SetProperty(ref _isNotChoosedLocation, !value);
-            }
-        }
+		public ChatListViewModel SelectedMessage
+		{
+			set 
+			{
+				if (value!=null)
+				{
+					if (value.IsSelected)
+					{
+						value.IsSelected = false;
+						return;
+					}
 
-        public bool IsNotChoosedLocation
-        {
-            get { return _isNotChoosedLocation; }
-            set
-            {
-                SetProperty(ref _isNotChoosedLocation, value);
-                SetProperty(ref _isChoosedLocation, !value);
-            }
-        }*/
+					foreach (var message in Messages)
+					{
+						if (message.IsSelected)
+						{
+							message.IsSelected = false;
+						}
+					}
+					value.IsSelected = true;
 
-        public DelegateCommand ChooseLocation { get; set; }
+					if (Messages.LastOrDefault().Equals(value))
+					{
+						if (RefreshScrollDown!=null)
+							RefreshScrollDown(this, EventArgs.Empty);
+					}
+				}
+			}
+		}
+
+		public DelegateCommand ChooseLocationClick { get; set; }
+		public DelegateCommand SendClick { get; set; }
+		public event EventHandler RefreshScrollDown;
 
         public ChatPageViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
             Messages = new ObservableCollection<ChatListViewModel>();
-            ChooseLocation = new DelegateCommand(GoToChooseLocation);
+            ChooseLocationClick = new DelegateCommand(ChooseLocation);
+			SendClick = new DelegateCommand(async ()=>await Send(ChoosedLocation, TypedMessage));
+
+			/*FakeData.FakeData.ChatsChaged += async (sender, e) => 
+			{
+				await FillMessages();
+			};*/
         }
        
         public void OnNavigatedFrom(NavigationParameters parameters)
         {
-			//if (ChoosedLocation != null)
-			//	_navigationService.NavigateAsync("MainTabbedPage");
+
         }
 
         public async void OnNavigatedTo(NavigationParameters parameters)
@@ -115,71 +143,85 @@ namespace LocationMessenger.ViewModels
             if (parameters.ContainsKey("idChat"))
             {
                 var id = parameters["idChat"] as string;
-                if (id != null)
+				if (id != null && !IsChoosedLocation)
                 {
                     _id = id;
 
-					var members = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(id)).Members;
-					if (!members[0].Equals(FakeData.FakeData.Me))
-					{
-						Title = (members[0].Name ?? "") + " " + (members[0].Surname ?? "");
-					}
-					else
-					{
-						Title = (members[1].Name ?? "") + " " + (members[1].Surname ?? "");
-					}
+					SetTitle();
 
-                    var messages = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(id)).Messages;
-                    foreach (var msg in messages)
-                    {
-                        Messages.Add(new ChatListViewModel()
-                        {
-                            Message = msg,
-                            Address = "Fetching address...",
-                            Alligment = (msg.Owner.Id.Equals(FakeData.FakeData.Me.Id)) 
-                                ? LayoutOptions.End 
-                                : LayoutOptions.Start,
-                        });                        
-                    }
-
-                    foreach (var msg in Messages)
-                    {
-                        try
-                        {
-                            msg.Address = await GetAdressFromLocation(
-                                new Position(msg.Message.Location.Latitude, msg.Message.Location.Longitude));
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine("Failed to load address");   
-                        }
-                    }
+					//await FillMessages();
                 }
             }
+
+			await FillMessages();
 
             if (parameters.ContainsKey("position"))
             {
                 ChoosedLocation = (Position) parameters["position"];
-                ChoosedAddress = await GetAdressFromLocation(ChoosedLocation.Value);
+				IsChoosedLocation = true;
+                ChoosedAddress = await GetAdressFromLocation(ChoosedLocation);
             }
             else
             {
-                ChoosedLocation = null;
+				IsChoosedLocation = false;
             }
+
+			if (RefreshScrollDown != null)
+                RefreshScrollDown(this, EventArgs.Empty);
         }
 
 		public void OnNavigatingTo(NavigationParameters parameters)
 		{
+
 		}
 
+		private async Task FillMessages()
+		{
+			Messages = new ObservableCollection<ChatListViewModel>();
 
-        private async void GoToChooseLocation()
+			var messages = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Messages;
+            foreach (var msg in messages)
+            {
+                Messages.Add(new ChatListViewModel()
+				{
+					Message = msg,
+                    Address = "Fetching address...",
+                    Alligment = (msg.Owner.Id.Equals(FakeData.FakeData.Me.Id))
+						? LayoutOptions.End
+						: LayoutOptions.Start,
+                });                        
+            }
+
+            foreach (var msg in Messages)
+            {
+                try
+                {
+                    msg.Address = await GetAdressFromLocation(
+						new Position(msg.Message.Location.Latitude, msg.Message.Location.Longitude));
+                }
+                catch
+                {
+                    Debug.WriteLine("Failed to load address");   
+                }
+            }
+		}
+
+		private void SetTitle()
+		{
+			var members = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Members;
+			if (!members[0].Equals(FakeData.FakeData.Me))
+			{
+				Title = (members[0].Name ?? "") + " " + (members[0].Surname ?? "");
+			}
+			else
+			{
+				Title = (members[1].Name ?? "") + " " + (members[1].Surname ?? "");
+			}
+		}
+
+		private async void ChooseLocation()
         {
-            if (ChoosedLocation==null)
-				await _navigationService.NavigateAsync("ChooseLocationMapPage?idChat="+_id);
-            else
-                await Send(ChoosedLocation.Value, TypedMessage);
-
+			await _navigationService.NavigateAsync("ChooseLocationMapPage?idChat="+_id);
         }
 
         private async Task Send(Position position, string message)
@@ -189,32 +231,40 @@ namespace LocationMessenger.ViewModels
                 Id = Guid.NewGuid().ToString(),
                 Location = new Location(position.Latitude, position.Longitude),
                 Owner = FakeData.FakeData.Me,
-                Text = message
+                Text = message,
+				Date = DateTime.Now
             };
             FakeData.FakeData.Chats.First(c=>c.Id.Equals(_id)).Messages.Add(msg);
 			FakeData.FakeData.RaiseChangedChats();
 
-            var listviewmsg = new ChatListViewModel()
-            {
-                Message = msg,
-                Address = "Fetching address...",
-                Alligment = (msg.Owner.Id.Equals(FakeData.FakeData.Me.Id))
-                                ? LayoutOptions.End
-                                : LayoutOptions.Start,
+			var listviewmsg = new ChatListViewModel()
+			{
+				Message = msg,
+				Address = "Fetching address...",
+				Alligment = (msg.Owner.Id.Equals(FakeData.FakeData.Me.Id))
+								? LayoutOptions.End
+								: LayoutOptions.Start,
+				IsSelected = true
             };
 
             Messages.Add(listviewmsg);
-            
 
+			if (RefreshScrollDown != null)
+                RefreshScrollDown(this, EventArgs.Empty);
+            
             try
             {
                 listviewmsg.Address = await GetAdressFromLocation(
                     new Position(listviewmsg.Message.Location.Latitude, listviewmsg.Message.Location.Longitude));
             }
-            catch (Exception e)
+            catch
             {
                 Debug.WriteLine("Failed to load address");
             }
+
+			TypedMessage = "";
+			ChoosedLocation = new Position();
+			IsChoosedLocation = false;
         }
 
         private async Task<string> GetAdressFromLocation(Position position)

@@ -14,7 +14,6 @@ namespace LocationMessenger.ViewModels
     public class MapPageViewModel : BindableBase
     {
         private INavigationService _navigationService;
-		private readonly IModuleManager _moduleManager;
 
         private string _title = "Map";
         private ObservableCollection<MapPinViewModel> _pins;
@@ -41,7 +40,6 @@ namespace LocationMessenger.ViewModels
         public MapPageViewModel(IModuleManager moduleManager, INavigationService navigationService)
         {
             _navigationService = navigationService;
-			_moduleManager = moduleManager;
 
 			//MessageClicked += (sender, e) => NavigateToClickedChat(e);
 
