@@ -265,6 +265,8 @@ namespace LocationMessenger.ViewModels
 			TypedMessage = "";
 			ChoosedLocation = new Position();
 			IsChoosedLocation = false;
+
+
         }
 
         private async Task<string> GetAdressFromLocation(Position position)

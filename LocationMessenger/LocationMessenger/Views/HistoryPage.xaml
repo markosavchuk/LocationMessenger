@@ -9,9 +9,9 @@
 			<ListView.ItemTemplate>
 				<DataTemplate>
           <ImageCell Text="{Binding ChatName}" Detail="{Binding LastMessage}">
-            <ImageCell.ContextActions>
+            <!--<ImageCell.ContextActions>
               <MenuItem Text="Delete" />
-            </ImageCell.ContextActions>
+            </ImageCell.ContextActions>-->
           </ImageCell>
 				</DataTemplate>
 			</ListView.ItemTemplate>

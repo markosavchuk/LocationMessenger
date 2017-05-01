@@ -8,6 +8,7 @@ using System.Linq;
 using Prism.Navigation;
 using Xamarin.Forms.Maps;
 using Prism.Modularity;
+using LocationMessenger.Models;
 
 namespace LocationMessenger.ViewModels
 {
@@ -37,7 +38,7 @@ namespace LocationMessenger.ViewModels
 
 		public event EventHandler PinsChanged;
 
-        public MapPageViewModel(IModuleManager moduleManager, INavigationService navigationService)
+		public MapPageViewModel(INavigationService navigationService, IData data)
         {
             _navigationService = navigationService;
 
@@ -51,15 +52,28 @@ namespace LocationMessenger.ViewModels
 			FillPins();
         }
 
-		public void NavigateToClickedChat(string idMessage)
+		public async void NavigateToClickedChat(string idMessage)
         {
             if (FakeData.FakeData.Chats.Any(c => c.Messages.Any(m => m.Id.Equals(idMessage))))
             {
                 var idChat = FakeData.FakeData.Chats
                     .First(c => c.Messages.Exists(m => m.Id.Equals(idMessage))).Id;
 
-				_navigationService.NavigateAsync("ChatPage?idChat=" + idChat, useModalNavigation:false);
-            }            
+				await _navigationService.NavigateAsync("ChatPage?idChat=" + idChat, useModalNavigation:false);
+
+
+				//
+					System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+					sw.Start();
+
+					var service = new AzureDataService();
+					await service.Initialize(FakeData.FakeData.Me.Id);
+					await service.AddChat("superid2");;
+					//var chat = await service.GetChats();
+
+					sw.Stop();
+				//
+            }
         }
 
 		private void FillPins()

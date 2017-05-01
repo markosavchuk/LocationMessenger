@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LocationMessenger.Views;
+using Microsoft.Practices.Unity;
 using Prism.Modularity;
 using Prism.Unity;
 using Xamarin.Forms;
@@ -20,6 +21,9 @@ namespace LocationMessenger
 
         protected override void RegisterTypes()
         {
+			Container.RegisterType(typeof(IAzureDataService), typeof(AzureDataService), null, new ContainerControlledLifetimeManager());
+			Container.RegisterType(typeof(IData), typeof(Data), null, new ContainerControlledLifetimeManager());
+
             Container.RegisterTypeForNavigation<MainTabbedPage>();
             Container.RegisterTypeForNavigation<HistoryPage>();
             Container.RegisterTypeForNavigation<MapPage>();

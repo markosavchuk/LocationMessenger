@@ -1,15 +1,17 @@
 ﻿<Properties StartupConfiguration="{9BF20B56-ED21-4E10-9314-4FA1C0496B61}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="LocationMessenger/LocationMessenger/Views/ChatPage.xaml">
+  <MonoDevelop.Ide.Workbench ActiveDocument="LocationMessenger/LocationMessenger/Database/AzureDataService.cs">
     <Files>
-      <File FileName="LocationMessenger/LocationMessenger/Views/ChatPage.xaml.cs" Line="145" Column="7" />
-      <File FileName="LocationMessenger/LocationMessenger/ViewModels/ChatPageViewModel.cs" Line="89" Column="43" />
-      <File FileName="LocationMessenger/LocationMessenger/ViewModels/HistoryPageViewModel.cs" Line="30" Column="52" />
-      <File FileName="LocationMessenger/LocationMessenger/Views/ChatPage.xaml" Line="10" Column="109" />
+      <File FileName="LocationMessenger/LocationMessenger/Database/AzureDataService.cs" Line="144" Column="4" />
+      <File FileName="LocationMessenger/LocationMessenger/Services/IAzureDataService.cs" Line="14" Column="33" />
+      <File FileName="LocationMessenger/LocationMessenger/Database/Data.cs" Line="15" Column="1" />
+      <File FileName="LocationMessenger/LocationMessenger/ViewModels/MapPageViewModel.cs" Line="42" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/ms/Desktop/LocationMessenger/LocationMessenger/LocationMessenger/LocationMessenger/Database/Data.cs" relfile="LocationMessenger/LocationMessenger/Database/Data.cs" line="15" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />

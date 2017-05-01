@@ -11,5 +11,6 @@ namespace LocationMessenger.Models
         public string Id { get; set; }
         public List<Person> Members { get; set; }
         public List<Message> Messages { get; set; }
+		public bool Read { get; set; }
     }
 }

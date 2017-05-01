@@ -24,6 +24,8 @@ namespace LocationMessenger.Droid
             LoadApplication(new App());
 
             Xamarin.FormsMaps.Init(this, bundle);
+
+			Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
         }
     }
 }

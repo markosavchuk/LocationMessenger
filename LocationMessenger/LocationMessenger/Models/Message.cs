@@ -12,7 +12,6 @@ namespace LocationMessenger.Models
         public Person Owner { get; set; }
         public string Text { get; set; }
         public DateTime Date { get; set; }
-        public bool Sent { get; set; }
         public Location Location { get; set; }
     }
 }
