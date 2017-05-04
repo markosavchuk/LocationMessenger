@@ -6,25 +6,30 @@ using Microsoft.WindowsAzure.MobileServices;
 using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using LocationMessenger.Models;
+using System.Linq;
 
 namespace LocationMessenger
 {
 	public class AzureDataService : IAzureDataService
 	{
 		private const string UrlServer = "http://locationmessangerapp.azurewebsites.net";
-		private const string LocalDBPath = "SyncStore6";
+		private const string LocalDBPath = "SyncStore31";
 
 		private string _myId;
+		private string _myIdQuery;
 
 		private MobileServiceClient _mobileServiceClient { get; set; }
 
 		private IMobileServiceSyncTable<ChatAzure> _chatTable { get; set; }
 		private IMobileServiceSyncTable<MessageAzure> _messageTable { get; set; }
 		private IMobileServiceSyncTable<UserAzure> _userTable { get; set; }
-		private IMobileServiceSyncTable<ChatUsersAzure> _chatUsersTable { get; set; }
+		private IMobileServiceSyncTable<ChatUsersAzure> _chatUsersTableMyConnections { get; set; }
+		private IMobileServiceSyncTable<ChatUsersAzure> _chatUsersTableFriendsConnections { get; set; }
 
 		private IList<ChatAzure> _chatList { get; set;}
-		private IList<ChatUsersAzure> _chatUsersList { get; set;}
+		private IList<ChatUsersAzure> _chatUsersListMyConn { get; set; }
+		private IList<ChatUsersAzure> _chatUsersListFriendsConn { get; set; }
+		private IList<MessageAzure> _messageList { get; set; }
 
 		public async Task Initialize(string myId)
 		{
@@ -42,39 +47,119 @@ namespace LocationMessenger
 			_chatTable = _mobileServiceClient.GetSyncTable<ChatAzure>();
 			_messageTable = _mobileServiceClient.GetSyncTable<MessageAzure>();
 			_userTable = _mobileServiceClient.GetSyncTable<UserAzure>();
-			_chatUsersTable = _mobileServiceClient.GetSyncTable<ChatUsersAzure>();
+			_chatUsersTableMyConnections = _mobileServiceClient.GetSyncTable<ChatUsersAzure>();
+			_chatUsersTableFriendsConnections = _mobileServiceClient.GetSyncTable<ChatUsersAzure>();
 
 			_myId = myId;
+			_myIdQuery = (_myId.Length > 10) ? _myId.Substring(0,10) : _myId;
 		}
 
-		private async Task SyncChatUsers()
+		private async Task SyncChatUsersMyConections(bool useOffline = false)
 		{
-			IMobileServiceTableQuery<ChatUsersAzure> query = _chatUsersTable.Where(c => c.UserId==_myId);
-			await _chatUsersTable.PullAsync("syncchatusers", query);
-			await _mobileServiceClient.SyncContext.PushAsync();
-			_chatUsersList = await _chatUsersTable.ToListAsync();
+
+			if (!useOffline)
+			{
+				IMobileServiceTableQuery<ChatUsersAzure> query = _chatUsersTableMyConnections
+					.CreateQuery()
+					.Where(c => c.UserId ==_myId);
+
+				try
+				{
+					await _chatUsersTableMyConnections.PullAsync("sycnMyConn" + _myIdQuery, query);
+				}
+				catch (Exception e)
+				{
+
+				}
+			}
+
+			_chatUsersListMyConn = await _chatUsersTableMyConnections
+				.Where(c => c.UserId==_myId)
+				.ToListAsync();
+
+			_chatUsersListMyConn = _chatUsersListMyConn
+				.Where(c => c.UserId == _myId)
+				.ToList();
 		}
 
-		private async Task SyncChats()
+		private async Task SycnChatUsersFriendsConnections(bool useOffline = false)
 		{
-			await SyncChatUsers();
-
+			if (_chatList == null)
+				return;
+			
 			var ids = new List<string>();
-			foreach (var cu in _chatUsersList)
+			foreach (var chat in _chatList)
+			{
+				ids.Add(chat.Id);
+			}
+
+
+
+			if (!useOffline)
+			{
+
+				IMobileServiceTableQuery<ChatUsersAzure> query = _chatUsersTableMyConnections
+						.CreateQuery()
+						.Where(c => ids.Contains(c.ChatId));
+				
+				try
+				{
+					await _chatUsersTableFriendsConnections.PullAsync("syncFriends" + _myIdQuery, query);
+				}
+				catch (Exception e)
+				{
+
+				}
+			}
+
+			_chatUsersListFriendsConn = await _chatUsersTableFriendsConnections
+				.Where(c => ids.Contains(c.ChatId))
+				.ToListAsync();
+
+			_chatUsersListFriendsConn = _chatUsersListFriendsConn
+							.Where(c => ids.Contains(c.ChatId))
+							.ToList();
+		}
+
+		private async Task SyncChats(bool useOffline = false)
+		{
+			await SyncChatUsersMyConections(useOffline);
+			
+			var ids = new List<string>();
+			foreach (var cu in _chatUsersListMyConn)
 			{
 				ids.Add(cu.ChatId);
 			}
 
-			IMobileServiceTableQuery<ChatAzure> query = _chatTable.Where(c => ids.Contains(c.Id));
-			await _chatTable.PullAsync("syncchat", query);
-			await _mobileServiceClient.SyncContext.PushAsync();
+			if (!useOffline)
+			{
+				IMobileServiceTableQuery<ChatAzure> query = _chatTable
+						.CreateQuery()
+						.Where(c => ids.Contains(c.Id));
+				try
+				{
+					await _chatTable.PullAsync("syncChat" + _myIdQuery, query);
+				}
+				catch (Exception ex)
+				{
+
+				}
+			}
+
+			_chatList = await _chatTable
+				.Where(c => ids.Contains(c.Id))
+				.ToListAsync();
+
+			_chatList = _chatList
+							.Where(c => ids.Contains(c.Id))
+							.ToList();
 		}
 
-		private async Task SyncMessages(bool syncChats = false)
+		private async Task SyncMessages(bool syncChats = false, bool useOffline = false)
 		{
 			if (syncChats || _chatList==null)
 			{
-				await GetChats();
+				await SyncChats(useOffline);
 			}
 
 			var ids = new List<string>();
@@ -83,21 +168,43 @@ namespace LocationMessenger
 				ids.Add(id.Id);
 			}
 
-			IMobileServiceTableQuery<MessageAzure> query = _messageTable.Where(m => ids.Contains(m.ChatId));
-			await _messageTable.PullAsync("syncmessages", query);
-			await _mobileServiceClient.SyncContext.PushAsync();
+
+			if (!useOffline)
+			{
+				IMobileServiceTableQuery<MessageAzure> query = _messageTable
+						.CreateQuery()
+						.Where(m => ids.Contains(m.ChatId));
+
+				try
+				{
+					await _messageTable.PullAsync("syncMsg" + _myIdQuery, query);
+				}
+				catch (Exception e)
+				{
+
+				}
+			}
+
+			_messageList = await _messageTable
+				.Where(m => ids.Contains(m.ChatId))
+				.ToListAsync();
+
+			_messageList = _messageList
+							.Where(m => ids.Contains(m.ChatId))
+							.ToList();
 		}
 
-		public async Task<IList<MessageAzure>> GetMessages(bool syncChats = false)
+		public async Task<IList<MessageAzure>> GetMessages(bool syncChats = false, bool useOffline = false)
 		{
-			await SyncMessages(syncChats);
-			return await _messageTable.ToListAsync();
+			await SyncMessages(syncChats, useOffline);
+			return _messageList;
 		}
 
 		public async Task AddMessage(Message msgModel, string chatId)
 		{
 			var msgAzure = new MessageAzure()
 			{
+				Id = msgModel.Id,
 				Longitude = msgModel.Location.Longitude,
 				Latitude = msgModel.Location.Latitude,
 				Text = msgModel.Text,
@@ -110,37 +217,41 @@ namespace LocationMessenger
 			await SyncMessages();
 		}
 
-		public async Task<IList<ChatAzure>> GetChats()
+		public async Task<Tuple<IList<ChatAzure>,IList<ChatUsersAzure>>> GetChats(bool useOffline = false)
 		{
-			await SyncChats();
-			_chatList = await _chatTable.ToListAsync();
-			return _chatList;
+			await SyncChats(useOffline);
+
+			await SycnChatUsersFriendsConnections(useOffline);
+
+			return new Tuple<IList<ChatAzure>, IList<ChatUsersAzure>>
+				(_chatList, _chatUsersListFriendsConn);
 		}
 
-		public async Task AddChat(string idFriend)
+		public async Task<Tuple<IList<ChatAzure>,IList<ChatUsersAzure>>> AddChat(string idFriend)
 		{
 			var chatId = Guid.NewGuid().ToString();
-			var chat = new ChatAzure()
-			{
-				Id = chatId
-			};
-			await _chatTable.InsertAsync(chat);
 
 			var userChats1 = new ChatUsersAzure()
 			{
 				UserId = _myId,
 				ChatId = chatId
 			};
-			await _chatUsersTable.InsertAsync(userChats1);
+			await _chatUsersTableMyConnections.InsertAsync(userChats1);
 
 			var userChats2 = new ChatUsersAzure()
 			{
 				UserId = idFriend,
 				ChatId = chatId
 			};
-			await _chatUsersTable.InsertAsync(userChats2);
+			await _chatUsersTableMyConnections.InsertAsync(userChats2);
 
-			await SyncChats();
+			var chat = new ChatAzure()
+			{
+				Id = chatId
+			};
+			await _chatTable.InsertAsync(chat);
+
+			return await GetChats();
 		}
 	}
 }

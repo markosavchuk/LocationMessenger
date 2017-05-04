@@ -13,6 +13,7 @@ namespace LocationMessenger.ViewModels
 	public class HistoryPageViewModel : BindableBase
     {
         private readonly INavigationService _navigationService;
+		private readonly IData _data;
 
         private Person _me;
 
@@ -41,18 +42,17 @@ namespace LocationMessenger.ViewModels
             }
         }
 
-        public HistoryPageViewModel(INavigationService navigationService)
+		public HistoryPageViewModel(INavigationService navigationService, IData data)
         {
             _navigationService = navigationService;
+			_data = data;
 
-            _me = FakeData.FakeData.Me;
+			Chats = new ObservableCollection<HistoryListViewModel>();
 
-			FakeData.FakeData.ChatsChaged += (sender, e) => 
-			{
-				FillChats();
-			};
+			_me = _data.Me;
 
-			FillChats();
+			_data.DataReady += (sender, e) => FillChats();
+			_data.ChatsChanged += (sender, e) => FillChats();
         }
 
         private void NavigateToChat(string id)
@@ -62,16 +62,19 @@ namespace LocationMessenger.ViewModels
 
 		private void FillChats()
 		{
-			_chats = new ObservableCollection<HistoryListViewModel>();
+			Chats.Clear();
 			
-			foreach (var chat in FakeData.FakeData.Chats)
+			foreach (var chat in _data.Chats)
 			{
 				var member = chat.Members.FirstOrDefault(m => m != _me);
+				if (member == null)
+					continue;
+				
 				Chats.Add(new HistoryListViewModel()
 				{
 					Id = chat.Id,
 					ChatName = (member.Name ?? "") + " " + (member.Surname ?? ""),
-					LastMessage = chat.Messages.Last() != null ? chat.Messages.Last().Text : "Chat is empty..."
+					LastMessage = chat.Messages.LastOrDefault() != null ? chat.Messages.Last().Text : "Start chat..."
 				});
 			}
 		}

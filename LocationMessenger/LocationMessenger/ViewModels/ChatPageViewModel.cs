@@ -17,6 +17,7 @@ namespace LocationMessenger.ViewModels
 	public class ChatPageViewModel : BindableBase, INavigationAware
     {
         private readonly INavigationService _navigationService;
+		private readonly IData _data;
 
         private string _id;
 		private string _chooseLocationButtonTitle = "Choose location";
@@ -120,17 +121,14 @@ namespace LocationMessenger.ViewModels
 		public DelegateCommand SendClick { get; set; }
 		public event EventHandler RefreshScrollDown;
 
-        public ChatPageViewModel(INavigationService navigationService)
+		public ChatPageViewModel(INavigationService navigationService, IData data)
         {
             _navigationService = navigationService;
+			_data = data;
+
             Messages = new ObservableCollection<ChatListViewModel>();
             ChooseLocationClick = new DelegateCommand(ChooseLocation);
 			SendClick = new DelegateCommand(async ()=>await Send(ChoosedLocation, TypedMessage));
-
-			/*FakeData.FakeData.ChatsChaged += async (sender, e) => 
-			{
-				await FillMessages();
-			};*/
         }
        
         public void OnNavigatedFrom(NavigationParameters parameters)
@@ -179,14 +177,14 @@ namespace LocationMessenger.ViewModels
 		{
 			Messages = new ObservableCollection<ChatListViewModel>();
 
-			var messages = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Messages;
+			var messages = _data.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Messages;
             foreach (var msg in messages)
             {
                 Messages.Add(new ChatListViewModel()
 				{
 					Message = msg,
                     Address = "Fetching address...",
-                    Alligment = (msg.Owner.Id.Equals(FakeData.FakeData.Me.Id))
+					Alligment = (msg.Owner.Id.Equals(_data.Me.Id))
 						? LayoutOptions.End
 						: LayoutOptions.Start,
                 });                        
@@ -208,8 +206,8 @@ namespace LocationMessenger.ViewModels
 
 		private void SetTitle()
 		{
-			var members = FakeData.FakeData.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Members;
-			if (!members[0].Equals(FakeData.FakeData.Me))
+			var members = _data.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Members;
+			if (!members[0].Equals(_data.Me))
 			{
 				Title = (members[0].Name ?? "") + " " + (members[0].Surname ?? "");
 			}
@@ -230,18 +228,17 @@ namespace LocationMessenger.ViewModels
             {
                 Id = Guid.NewGuid().ToString(),
                 Location = new Location(position.Latitude, position.Longitude),
-                Owner = FakeData.FakeData.Me,
+				Owner = _data.Me,
                 Text = message,
 				Date = DateTime.Now
             };
-            FakeData.FakeData.Chats.First(c=>c.Id.Equals(_id)).Messages.Add(msg);
-			FakeData.FakeData.RaiseChangedChats();
+
 
 			var listviewmsg = new ChatListViewModel()
 			{
 				Message = msg,
 				Address = "Fetching address...",
-				Alligment = (msg.Owner.Id.Equals(FakeData.FakeData.Me.Id))
+				Alligment = (msg.Owner.Id.Equals(_data.Me.Id))
 								? LayoutOptions.End
 								: LayoutOptions.Start,
 				IsSelected = true
@@ -251,7 +248,7 @@ namespace LocationMessenger.ViewModels
 
 			if (RefreshScrollDown != null)
                 RefreshScrollDown(this, EventArgs.Empty);
-            
+
             try
             {
                 listviewmsg.Address = await GetAdressFromLocation(
@@ -266,7 +263,7 @@ namespace LocationMessenger.ViewModels
 			ChoosedLocation = new Position();
 			IsChoosedLocation = false;
 
-
+			await _data.SendMessage(msg, _id);
         }
 
         private async Task<string> GetAdressFromLocation(Position position)

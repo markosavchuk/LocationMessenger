@@ -61,7 +61,7 @@ namespace LocationMessenger.Views
 										Position = position
 									});
 									map.HeightRequest = 200;
-									map.HasZoomEnabled = false;
+									map.HasZoomEnabled = true;
 									map.MapType = MapType.Street;
 
 									view.Content = map;
@@ -102,7 +102,7 @@ namespace LocationMessenger.Views
 									Position = position
 								});
 								msgMap.HeightRequest = 200;
-								msgMap.HasZoomEnabled = false;
+								msgMap.HasZoomEnabled = true;
 								msgMap.MapType = MapType.Street;
 
 								contentView.Content = msgMap;

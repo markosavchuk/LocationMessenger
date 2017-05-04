@@ -15,6 +15,7 @@ namespace LocationMessenger.ViewModels
     public class MapPageViewModel : BindableBase
     {
         private INavigationService _navigationService;
+		private IData _data;
 
         private string _title = "Map";
         private ObservableCollection<MapPinViewModel> _pins;
@@ -41,37 +42,34 @@ namespace LocationMessenger.ViewModels
 		public MapPageViewModel(INavigationService navigationService, IData data)
         {
             _navigationService = navigationService;
+			_data = data;
 
-			//MessageClicked += (sender, e) => NavigateToClickedChat(e);
+			Pins = new ObservableCollection<MapPinViewModel>();
 
-			FakeData.FakeData.ChatsChaged += (sender, e) =>
-			{
-				FillPins();
-			};
-
-			FillPins();
+			_data.DataReady += (sender, e) => FillPins();
+			_data.ChatsChanged += (sender, e) => FillPins();
         }
 
 		public async void NavigateToClickedChat(string idMessage)
         {
-            if (FakeData.FakeData.Chats.Any(c => c.Messages.Any(m => m.Id.Equals(idMessage))))
+            if (_data.Chats.Any(c => c.Messages.Any(m => m.Id.Equals(idMessage))))
             {
-                var idChat = FakeData.FakeData.Chats
+				var idChat = _data.Chats
                     .First(c => c.Messages.Exists(m => m.Id.Equals(idMessage))).Id;
 
 				await _navigationService.NavigateAsync("ChatPage?idChat=" + idChat, useModalNavigation:false);
 
 
 				//
-					System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+					/*System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 					sw.Start();
 
 					var service = new AzureDataService();
-					await service.Initialize(FakeData.FakeData.Me.Id);
-					await service.AddChat("superid2");;
+					await service.Initialize(_data.Me.Id);
+					var t = await service.GetChats();
 					//var chat = await service.GetChats();
 
-					sw.Stop();
+					sw.Stop();*/
 				//
             }
         }
@@ -83,7 +81,7 @@ namespace LocationMessenger.ViewModels
 
 			_pins.Clear();
 			
-			foreach (var chat in FakeData.FakeData.Chats)
+			foreach (var chat in _data.Chats)
 			{
 				foreach (var message in chat.Messages)
 				{
