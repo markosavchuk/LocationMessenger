@@ -15,6 +15,7 @@ namespace LocationMessenger
 		event EventHandler DataReady;
 		Task Initialize();
 		Task SendMessage(Message msg, string chatId);
+		Task ReadChat(string idChat);
 		void RaiseChangedChats();
 	}
 }

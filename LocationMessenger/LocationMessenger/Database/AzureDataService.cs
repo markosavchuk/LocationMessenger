@@ -93,8 +93,6 @@ namespace LocationMessenger
 				ids.Add(chat.Id);
 			}
 
-
-
 			if (!useOffline)
 			{
 
@@ -200,7 +198,7 @@ namespace LocationMessenger
 			return _messageList;
 		}
 
-		public async Task AddMessage(Message msgModel, string chatId)
+		public async Task SendMessage(Message msgModel, string chatId)
 		{
 			var msgAzure = new MessageAzure()
 			{
@@ -213,6 +211,15 @@ namespace LocationMessenger
 			};
 
 			await _messageTable.InsertAsync(msgAzure);
+
+			foreach (var con in _chatUsersListFriendsConn)
+			{
+				if (con.ChatId.Equals(chatId) && !con.UserId.Equals(_myId))
+				{
+					con.Read = false;
+					await _chatUsersTableFriendsConnections.UpdateAsync(con);
+				}
+			}
 
 			await SyncMessages();
 		}
@@ -234,14 +241,16 @@ namespace LocationMessenger
 			var userChats1 = new ChatUsersAzure()
 			{
 				UserId = _myId,
-				ChatId = chatId
+				ChatId = chatId,
+				Read = true
 			};
 			await _chatUsersTableMyConnections.InsertAsync(userChats1);
 
 			var userChats2 = new ChatUsersAzure()
 			{
 				UserId = idFriend,
-				ChatId = chatId
+				ChatId = chatId,
+				Read = false
 			};
 			await _chatUsersTableMyConnections.InsertAsync(userChats2);
 
@@ -252,6 +261,16 @@ namespace LocationMessenger
 			await _chatTable.InsertAsync(chat);
 
 			return await GetChats();
+		}
+
+		public async Task ReadChat(string idChat)
+		{
+			var userChat =_chatUsersListMyConn.FirstOrDefault(c=>c.ChatId.Equals(idChat));
+			if (userChat!=null)
+			{
+				userChat.Read = true;
+				await _chatUsersTableMyConnections.UpdateAsync(userChat);
+			}
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace LocationMessenger.ViewModels
         private readonly INavigationService _navigationService;
 		private readonly IData _data;
 
-        private string _id;
+		private string _idChat;
 		private string _chooseLocationButtonTitle = "Choose location";
 		private ObservableCollection<ChatListViewModel> _messages;
         private Position _choosedLocation;
@@ -143,11 +143,9 @@ namespace LocationMessenger.ViewModels
                 var id = parameters["idChat"] as string;
 				if (id != null && !IsChoosedLocation)
                 {
-                    _id = id;
+                    _idChat = id;
 
 					SetTitle();
-
-					//await FillMessages();
                 }
             }
 
@@ -166,6 +164,8 @@ namespace LocationMessenger.ViewModels
 
 			if (RefreshScrollDown != null)
                 RefreshScrollDown(this, EventArgs.Empty);
+
+			await _data.ReadChat(_idChat);
         }
 
 		public void OnNavigatingTo(NavigationParameters parameters)
@@ -177,7 +177,7 @@ namespace LocationMessenger.ViewModels
 		{
 			Messages = new ObservableCollection<ChatListViewModel>();
 
-			var messages = _data.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Messages;
+			var messages = _data.Chats.FirstOrDefault(c => c.Id.Equals(_idChat)).Messages;
             foreach (var msg in messages)
             {
                 Messages.Add(new ChatListViewModel()
@@ -206,7 +206,7 @@ namespace LocationMessenger.ViewModels
 
 		private void SetTitle()
 		{
-			var members = _data.Chats.FirstOrDefault(c => c.Id.Equals(_id)).Members;
+			var members = _data.Chats.FirstOrDefault(c => c.Id.Equals(_idChat)).Members;
 			if (!members[0].Equals(_data.Me))
 			{
 				Title = (members[0].Name ?? "") + " " + (members[0].Surname ?? "");
@@ -219,7 +219,7 @@ namespace LocationMessenger.ViewModels
 
 		private async void ChooseLocation()
         {
-			await _navigationService.NavigateAsync("ChooseLocationMapPage?idChat="+_id);
+			await _navigationService.NavigateAsync("ChooseLocationMapPage?idChat="+_idChat);
         }
 
         private async Task Send(Position position, string message)
@@ -263,7 +263,7 @@ namespace LocationMessenger.ViewModels
 			ChoosedLocation = new Position();
 			IsChoosedLocation = false;
 
-			await _data.SendMessage(msg, _id);
+			await _data.SendMessage(msg, _idChat);
         }
 
         private async Task<string> GetAdressFromLocation(Position position)

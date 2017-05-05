@@ -14,9 +14,9 @@ namespace LocationMessenger
 {
     public class App : PrismApplication
     {
-        protected override void OnInitialized()
+        protected async override void OnInitialized()
         {
-            NavigationService.NavigateAsync("MainNavigationPage/MainTabbedPage");
+            await NavigationService.NavigateAsync("MainNavigationPage/MainTabbedPage");
         }
 
         protected override void RegisterTypes()

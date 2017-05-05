@@ -117,7 +117,18 @@ namespace LocationMessenger
 
 			RaiseChangedChats();
 
-			await _azureService.AddMessage(msg, chatId);
+			await _azureService.SendMessage(msg, chatId);
+		}
+
+		public async Task ReadChat(string idChat)
+		{
+			var chat = Chats.FirstOrDefault(c=>c.Id.Equals(idChat));
+			if (chat!=null)
+			{
+				chat.Read = true;
+				RaiseChangedChats();
+			}
+			await _azureService.ReadChat(idChat);
 		}
 
 		public void RaiseChangedChats()
