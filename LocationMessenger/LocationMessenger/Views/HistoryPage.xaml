@@ -5,7 +5,7 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              Title="{Binding Title}">
-  <ListView  x:Name="lstView" ItemsSource="{Binding Chats}" ItemSelected="ChatSelected" SelectedItem="{Binding ChatSelected}">
+ 	<ListView  x:Name="lstView" ItemsSource="{Binding Chats}" ItemSelected="ChatSelected" SelectedItem="{Binding ChatSelected}">
 			<ListView.ItemTemplate>
 				<DataTemplate>
           <ImageCell Text="{Binding ChatName}" Detail="{Binding LastMessage}">
@@ -15,5 +15,5 @@
           </ImageCell>
 				</DataTemplate>
 			</ListView.ItemTemplate>
-		</ListView>
+	</ListView>
 </ContentPage>

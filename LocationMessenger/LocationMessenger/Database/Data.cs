@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LocationMessenger.Models;
 using System.Linq;
+using System.Net.Http;
+using Plugin.Settings;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Plugin.Connectivity;
 
 namespace LocationMessenger
 {
@@ -13,6 +18,9 @@ namespace LocationMessenger
 		private bool _initialized;
 
 		private IList<MessageAzure> _messageAzure;
+
+		public static string FacebookTokenSettings = "FacebookTokenSettings";
+		public static string FacebookExpiredTokenSettings = "FacebookExpiredTokenSettings";
 
 		public List<Person> Contacts { get; set; }
 		public List<Chat> Chats { get; set; }
@@ -28,9 +36,16 @@ namespace LocationMessenger
 
 		public async Task Initialize()
 		{
-			//TODO retrieve from facebook my id and info about friends
-			Me = FakeData.FakeData.Me;
-			Contacts = new List<Person>(FakeData.FakeData.Contacts);
+			if (CrossSettings.Current.Contains(FacebookTokenSettings))
+			{
+				if (CrossConnectivity.Current.IsConnected)
+				{
+					await GetFacebookInfo(CrossSettings.Current.GetValueOrDefault<string>(FacebookTokenSettings));
+				}
+			}
+
+			if (String.IsNullOrEmpty(Me.Id))
+				return;
 
 			await _azureService.Initialize(Me.Id);
 
@@ -140,6 +155,92 @@ namespace LocationMessenger
 		private void SortChats()
 		{
 			Chats = Chats.OrderByDescending(c=>c.Messages.Select(m=>m.Date).LastOrDefault()).ToList();
+		}
+
+		private async Task GetFacebookInfo(string token)
+		{
+			var requestStr = @"https://graph.facebook.com/me/?" +
+				"fields=first_name,last_name,picture.type(normal)" +
+				"&access_token=" + token;
+
+			var httpClient = new HttpClient();
+			var userJson = await httpClient.GetStringAsync(requestStr);
+			var obj = JObject.Parse(userJson);
+
+			Me = new Person();
+
+			var id = obj["id"];
+			if (id!=null)
+			{
+				Me.Id = id.ToString();	
+			}
+
+			var firstName = obj["first_name"];
+			if (firstName!=null)
+			{
+				Me.Name = firstName.ToString();
+			}
+
+			var lastName = obj["last_name"];
+			if (lastName!=null)
+			{
+				Me.Surname = lastName.ToString();
+			}
+
+			var picture = obj["picture"];
+			if (picture!=null)
+			{
+				var data = picture["data"];
+				if (data!=null)
+				{
+					var url = data["url"];
+					if (url!=null)
+					{
+						Me.UrlImage = url.ToString();
+					}
+				}
+			}
+
+			var requestFriends = @"https://graph.facebook.com/me/friends?" +
+				"fields=id,first_name,last_name,picture.type(normal)" +
+				"&access_token=" + token;
+
+			userJson = await httpClient.GetStringAsync(requestFriends);
+			obj = (JObject)JsonConvert.DeserializeObject(userJson);
+
+			Contacts = new List<Person>();
+
+			if (obj["data"] is JArray)
+	        {
+	            foreach (var item in obj["data"])
+	            {
+					var facebookFriend = new Person
+					{
+						Name = item["first_name"]?.ToString(),
+						Surname = item["last_name"]?.ToString(),
+						Id = item["id"]?.ToString()
+					};
+
+					var picture_json = item["picture"];
+
+					if (picture_json != null)
+					{
+						var data = picture_json["data"];
+						if (data!=null)
+						{
+							var url = data["url"];
+							if (url!=null)
+							{
+								facebookFriend.UrlImage = url.ToString();
+							}
+						}
+					}
+					if (facebookFriend.Id!=null)
+					{
+						Contacts.Add(facebookFriend);
+					}
+	            }
+	        } 
 		}
 	}
 }

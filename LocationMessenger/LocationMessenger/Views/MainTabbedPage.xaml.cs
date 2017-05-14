@@ -1,4 +1,7 @@
-﻿using LocationMessenger.ViewModels;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using LocationMessenger.ViewModels;
 using Xamarin.Forms;
 
 namespace LocationMessenger.Views
@@ -25,5 +28,5 @@ namespace LocationMessenger.Views
 				_initialized = true;
 			}
 		}
-    }
+	}
 }

@@ -90,7 +90,7 @@ namespace LocationMessenger.ViewModels
 						AuthorName = (message.Owner.Name ?? "") + " " + (message.Owner.Surname ?? ""),
 						IdMessage = message.Id,
 						VisibleMessage = message.Text,
-						UrlImage = message.Owner.Image.Url,
+						UrlImage = message.Owner.UrlImage,
 						Pin = new Pin()
 						{
 							Position = new Position(message.Location.Latitude, message.Location.Longitude),

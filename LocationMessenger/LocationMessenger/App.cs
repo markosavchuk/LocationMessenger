@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LocationMessenger.Views;
 using Microsoft.Practices.Unity;
+using Plugin.Settings;
 using Prism.Modularity;
 using Prism.Unity;
 using Xamarin.Forms;
@@ -16,7 +17,19 @@ namespace LocationMessenger
     {
         protected async override void OnInitialized()
         {
-            await NavigationService.NavigateAsync("MainNavigationPage/MainTabbedPage");
+			if (CrossSettings.Current.Contains(Data.FacebookTokenSettings) 
+			    && CrossSettings.Current.Contains(Data.FacebookExpiredTokenSettings))
+			{
+				if (CrossSettings.Current.GetValueOrDefault<DateTime>(Data.FacebookExpiredTokenSettings)
+				    .CompareTo(DateTime.Now)<=-1)
+				{
+					await NavigationService.NavigateAsync("MainNavigationPage/LoginPage");
+				}
+				else
+				{
+					await NavigationService.NavigateAsync("MainNavigationPage/MainTabbedPage");
+				}
+			}
         }
 
         protected override void RegisterTypes()
@@ -30,6 +43,7 @@ namespace LocationMessenger
             Container.RegisterTypeForNavigation<ChatPage>();
             Container.RegisterTypeForNavigation<ChooseLocationMapPage>();
 			Container.RegisterTypeForNavigation<MainNavigationPage>();
+			Container.RegisterTypeForNavigation<LoginPage>();
         }
     }
 }

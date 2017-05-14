@@ -6,13 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using LocationMessenger.Models;
 using System.ComponentModel;
-using static LocationMessenger.Models.Person.GenderEnum;
 
 namespace LocationMessenger.FakeData
 {
 	public class FakeData
     {
-        static FakeData()
+        /*static FakeData()
         {
 			
             Me = new Person()
@@ -21,10 +20,7 @@ namespace LocationMessenger.FakeData
                 Name = "Marko",
                 Surname = "Savchuk",
                 Gender = Male,
-                Image = new Person.ImagePerson()
-                {
-                    Url = @"https://avatars.slack-edge.com/2016-11-19/107419585703_0941099a8ac1e69c84a3_original.jpg"
-                }
+
             };
 
 			Contacts = new ObservableCollection<Person>()
@@ -66,10 +62,7 @@ namespace LocationMessenger.FakeData
                     Name = "Uthyr",
                     Surname = "Bennie",
                     Gender = Male,
-                    Image = new Person.ImagePerson()
-                    {
-                        Url = @"https://media.npr.org/assets/img/2016/02/24/sam-sanders_sq-2592b60f365f3ef0a165172ef115b6199d61f985-s100-c85.jpg"
-                    }
+
                 },
                 new Person()
                 {
@@ -77,10 +70,7 @@ namespace LocationMessenger.FakeData
                     Name = "Seneca",
                     Surname = "Pollux",
                     Gender = Male,
-                    Image = new Person.ImagePerson()
-                    {
-                        Url = @"https://s-media-cache-ak0.pinimg.com/736x/c8/55/34/c8553420c95024c73fd21502430a14a2.jpg"
-                    }
+
                 },
                 new Person()
                 {
@@ -109,18 +99,14 @@ namespace LocationMessenger.FakeData
                     Name = "Diana",
                     Surname = "Monika",
                     Gender = Female,
-                    Image = new Person.ImagePerson()
-                    {
-                        Url = @"https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/maggie-lindemann-pretty-girl-1475155655.jpg?resize=200:*&crop=1xw:0.666564039408867xh;center,top"
-                    }
+
                 },
             
             };
-        }
+        }*/
 
         public static Person Me;
 
 		public static ObservableCollection<Person> Contacts;
-
 	}
 }

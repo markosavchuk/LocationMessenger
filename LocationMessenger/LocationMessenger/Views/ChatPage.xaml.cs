@@ -120,31 +120,6 @@ namespace LocationMessenger.Views
 
 		private void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-			/*var msg = e.SelectedItem as ChatListViewModel;
-
-			if (msg!=null && msg.IsSelected)
-			{
-				msg.IsSelected = false;
-				LstView.SelectedItem = null;
-				return;
-			}
-
-			if (e.SelectedItem != null)
-			{
-				foreach (var message in _viewModel.Messages)
-				{
-					if (message.IsSelected)
-					{
-						message.IsSelected = false;
-					}
-				}
-			}
-
-			if (msg!=null)
-			{
-				msg.IsSelected = true;
-			}*/
-
 			LstView.SelectedItem = null;
         }
 
