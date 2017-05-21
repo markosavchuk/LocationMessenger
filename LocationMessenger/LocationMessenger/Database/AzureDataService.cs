@@ -183,12 +183,26 @@ namespace LocationMessenger
 				}
 			}
 
+
+
 			_messageList = await _messageTable
 				.Where(m => ids.Contains(m.ChatId))
 				.ToListAsync();
 
+			foreach (var msg in _messageList)
+			{
+				if (!msg.Visible)
+				{
+					if (true)//check via service
+					{
+						msg.Visible = true;
+						await _messageTable.UpdateAsync(msg);
+					}
+				}
+			}
+
 			_messageList = _messageList
-							.Where(m => ids.Contains(m.ChatId))
+							.Where(m => ids.Contains(m.ChatId) && m.Visible)
 							.ToList();
 		}
 
@@ -207,7 +221,8 @@ namespace LocationMessenger
 				Latitude = msgModel.Location.Latitude,
 				Text = msgModel.Text,
 				OwnerId = msgModel.Owner.Id,
-				ChatId = chatId
+				ChatId = chatId,
+				Visible = true
 			};
 
 			await _messageTable.InsertAsync(msgAzure);

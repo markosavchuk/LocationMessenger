@@ -44,7 +44,7 @@ namespace LocationMessenger
 				}
 			}
 
-			if (String.IsNullOrEmpty(Me.Id))
+			if (Me==null || String.IsNullOrEmpty(Me.Id))
 				return;
 
 			await _azureService.Initialize(Me.Id);

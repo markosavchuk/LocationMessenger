@@ -32,5 +32,7 @@ namespace LocationMessenger
 
 		[Newtonsoft.Json.JsonProperty("text")]
 		public string Text { get; set; }
+
+		public bool Visible { get; set; }
 	}
 }

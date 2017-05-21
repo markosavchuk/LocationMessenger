@@ -17,11 +17,11 @@ namespace LocationMessenger
     {
         protected async override void OnInitialized()
         {
-			if (CrossSettings.Current.Contains(Data.FacebookTokenSettings) 
-			    && CrossSettings.Current.Contains(Data.FacebookExpiredTokenSettings))
+			if (CrossSettings.Current.Contains(Data.FacebookTokenSettings)
+				&& CrossSettings.Current.Contains(Data.FacebookExpiredTokenSettings))
 			{
 				if (CrossSettings.Current.GetValueOrDefault<DateTime>(Data.FacebookExpiredTokenSettings)
-				    .CompareTo(DateTime.Now)<=-1)
+					.CompareTo(DateTime.Now) <= -1)
 				{
 					await NavigationService.NavigateAsync("MainNavigationPage/LoginPage");
 				}
@@ -30,7 +30,11 @@ namespace LocationMessenger
 					await NavigationService.NavigateAsync("MainNavigationPage/MainTabbedPage");
 				}
 			}
-        }
+			else
+			{
+				await NavigationService.NavigateAsync("MainNavigationPage/LoginPage");
+			}
+		}
 
         protected override void RegisterTypes()
         {
