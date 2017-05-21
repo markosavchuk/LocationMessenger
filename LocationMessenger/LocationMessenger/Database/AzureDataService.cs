@@ -7,6 +7,7 @@ using Microsoft.WindowsAzure.MobileServices.SQLiteStore;
 using Microsoft.WindowsAzure.MobileServices.Sync;
 using LocationMessenger.Models;
 using System.Linq;
+using Xamarin.Forms.Maps;
 
 namespace LocationMessenger
 {
@@ -19,6 +20,7 @@ namespace LocationMessenger
 		private string _myIdQuery;
 
 		private MobileServiceClient _mobileServiceClient { get; set; }
+		private ILocationService _locationService;
 
 		private IMobileServiceSyncTable<ChatAzure> _chatTable { get; set; }
 		private IMobileServiceSyncTable<MessageAzure> _messageTable { get; set; }
@@ -30,6 +32,16 @@ namespace LocationMessenger
 		private IList<ChatUsersAzure> _chatUsersListMyConn { get; set; }
 		private IList<ChatUsersAzure> _chatUsersListFriendsConn { get; set; }
 		private IList<MessageAzure> _messageList { get; set; }
+
+		public AzureDataService(ILocationService location)
+		{
+			_locationService = location;
+
+			location.ChangedLocation+= async (sender, e) => 
+			{
+				await CheckMessageInArea(true);
+			};
+		}
 
 		public async Task Initialize(string myId)
 		{
@@ -183,33 +195,42 @@ namespace LocationMessenger
 				}
 			}
 
-
-
 			_messageList = await _messageTable
 				.Where(m => ids.Contains(m.ChatId))
 				.ToListAsync();
 
+			await CheckMessageInArea();
+
+			_messageList = _messageList
+							.Where(m => ids.Contains(m.ChatId))
+							.ToList();
+		}
+
+		private async Task CheckMessageInArea(bool notification = false)
+		{
 			foreach (var msg in _messageList)
 			{
 				if (!msg.Visible)
 				{
-					if (true)//check via service
+					if (_locationService.MessageInArea(new Position(msg.Latitude, msg.Longitude)))
 					{
 						msg.Visible = true;
 						await _messageTable.UpdateAsync(msg);
+
+						if (notification)
+						{
+							//notify changes!
+						}
 					}
 				}
 			}
-
-			_messageList = _messageList
-							.Where(m => ids.Contains(m.ChatId) && m.Visible)
-							.ToList();
 		}
 
 		public async Task<IList<MessageAzure>> GetMessages(bool syncChats = false, bool useOffline = false)
 		{
 			await SyncMessages(syncChats, useOffline);
-			return _messageList;
+			return _messageList.Where(m=>m.Visible)
+				               .ToList();
 		}
 
 		public async Task SendMessage(Message msgModel, string chatId)

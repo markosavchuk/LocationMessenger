@@ -14,6 +14,7 @@ namespace LocationMessenger
 	public class Data : IData
 	{
 		private IAzureDataService _azureService;
+		private ILocationService _locationService;
 
 		private bool _initialized;
 
@@ -29,9 +30,10 @@ namespace LocationMessenger
 		public event EventHandler ChatsChanged;
 		public event EventHandler DataReady;
 
-		public Data(IAzureDataService azureService)
+		public Data(IAzureDataService azureService, ILocationService location)
 		{
 			_azureService = azureService;
+			_locationService = location;
 		}
 
 		public async Task Initialize()
@@ -46,6 +48,9 @@ namespace LocationMessenger
 
 			if (Me==null || String.IsNullOrEmpty(Me.Id))
 				return;
+
+			await _locationService.StartListenign();
+			await _locationService.GetLocation();
 
 			await _azureService.Initialize(Me.Id);
 

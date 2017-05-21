@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LocationMessenger.Views;
 using Microsoft.Practices.Unity;
+using Plugin.Geolocator;
 using Plugin.Settings;
 using Prism.Modularity;
 using Prism.Unity;
@@ -40,6 +41,7 @@ namespace LocationMessenger
         {
 			Container.RegisterType(typeof(IAzureDataService), typeof(AzureDataService), null, new ContainerControlledLifetimeManager());
 			Container.RegisterType(typeof(IData), typeof(Data), null, new ContainerControlledLifetimeManager());
+			Container.RegisterType(typeof(ILocationService), typeof(LocationService), new ContainerControlledLifetimeManager());
 
             Container.RegisterTypeForNavigation<MainTabbedPage>();
             Container.RegisterTypeForNavigation<HistoryPage>();

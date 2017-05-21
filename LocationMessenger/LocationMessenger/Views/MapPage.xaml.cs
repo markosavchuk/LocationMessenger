@@ -26,10 +26,31 @@ namespace LocationMessenger.Views
 				MapMsg.MessageClicked += (sender, e) => _viewmodel.NavigateToClickedChat(e);
 
 				_viewmodel.PinsChanged += (sender, e) => MapMsg.UpdatePins();
-            }
 
-            MapMsg.MoveToRegion(MapSpan.FromCenterAndRadius(
-              new Position(49.834813, 23.997578), Distance.FromMiles(1.0)));
+				 MapMsg.MoveToRegion(MapSpan.FromCenterAndRadius(
+					_viewmodel.LocationService.Location!=null ?
+						_viewmodel.LocationService.Location : 
+						_viewmodel.LocationService.DefaultLocation, 
+					Distance.FromMiles(1.0)));
+            }
         }
+
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+			_viewmodel.LocationService.ChangedLocation += Track;
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			_viewmodel.LocationService.ChangedLocation -= Track;
+		}
+
+		private void Track(object sender, EventArgs atgs)
+		{
+			MapMsg.MoveToRegion(MapSpan.FromCenterAndRadius(
+						_viewmodel.LocationService.Location, Distance.FromMiles(1.0)));
+		}
     }
 }

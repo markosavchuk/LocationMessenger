@@ -15,11 +15,13 @@ namespace LocationMessenger.ViewModels
 
         private string _id;
 
+		public ILocationService LocationService;
         public EventHandler<MapTapEventArgs> Tapped { get; set; }
 
-        public ChooseLocationMapPageViewModel(INavigationService navigationService)
+		public ChooseLocationMapPageViewModel(INavigationService navigationService, ILocationService location)
         {
             _navigationService = navigationService;
+			LocationService = location;
 
             Tapped += (sender, args) => ChooseLocation(args.Position);
         }

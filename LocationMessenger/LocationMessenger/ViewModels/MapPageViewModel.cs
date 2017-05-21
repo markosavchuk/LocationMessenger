@@ -20,6 +20,8 @@ namespace LocationMessenger.ViewModels
         private string _title = "Map";
         private ObservableCollection<MapPinViewModel> _pins;
 
+		public ILocationService LocationService;
+
         public string Title
         {
             get { return _title; }
@@ -39,10 +41,11 @@ namespace LocationMessenger.ViewModels
 
 		public event EventHandler PinsChanged;
 
-		public MapPageViewModel(INavigationService navigationService, IData data)
+		public MapPageViewModel(INavigationService navigationService, IData data, ILocationService location)
         {
             _navigationService = navigationService;
 			_data = data;
+			LocationService = location;
 
 			Pins = new ObservableCollection<MapPinViewModel>();
 
