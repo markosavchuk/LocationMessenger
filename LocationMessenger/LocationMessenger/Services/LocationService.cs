@@ -9,7 +9,7 @@ namespace LocationMessenger
 	{
 		private Plugin.Geolocator.Abstractions.IGeolocator _locator;
 
-		private const int Radius = 10; // 10 meters
+		private const double Radius = 0.010; // 10 meters
 
 		public event EventHandler ChangedLocation;
 
@@ -33,15 +33,25 @@ namespace LocationMessenger
 
 		public async Task<Position> GetLocation()
 		{
-			var position = await _locator.GetPositionAsync(3000);
-			if (_locator != null)
+			if (_locator.IsGeolocationEnabled && _locator.IsGeolocationAvailable)
 			{
-				Location = new Position(position.Latitude, position.Longitude);
+				var position = await _locator.GetPositionAsync(3000);
+				if (_locator != null)
+				{
+					Location = new Position(position.Latitude, position.Longitude);
 
-				if (ChangedLocation != null)
-					ChangedLocation(this, EventArgs.Empty);
-				
-				return Location;
+					if (ChangedLocation != null)
+						ChangedLocation(this, EventArgs.Empty);
+
+					return Location;
+				}
+				else
+				{
+					if (Location == null)
+						return DefaultLocation;
+					else
+						return Location;
+				}
 			}
 			else
 			{

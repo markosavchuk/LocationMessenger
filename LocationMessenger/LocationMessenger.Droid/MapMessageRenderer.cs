@@ -132,7 +132,7 @@ namespace LocationMessenger.Droid
 				var picassoMarker = new PicassoMarker(marker);
 				Picasso.With(Context)
 					.Load(pin.UrlImage)
-					.Resize(100, 100)
+					.Resize(150, 150)
 					.Placeholder(Resource.Drawable.icon)
 					.Into(picassoMarker);
 			}

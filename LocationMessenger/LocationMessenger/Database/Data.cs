@@ -19,6 +19,7 @@ namespace LocationMessenger
 		private bool _initialized;
 
 		private IList<MessageAzure> _messageAzure;
+		private Tuple<IList<ChatAzure>, IList<ChatUsersAzure>> _chatsAzure;
 
 		public static string FacebookTokenSettings = "FacebookTokenSettings";
 		public static string FacebookExpiredTokenSettings = "FacebookExpiredTokenSettings";
@@ -38,6 +39,9 @@ namespace LocationMessenger
 
 		public async Task Initialize()
 		{
+			if (_initialized)
+				return;
+			
 			if (CrossSettings.Current.Contains(FacebookTokenSettings))
 			{
 				if (CrossConnectivity.Current.IsConnected)
@@ -54,24 +58,33 @@ namespace LocationMessenger
 
 			await _azureService.Initialize(Me.Id);
 
-			var chatsAzure = await _azureService.GetChats(useOffline: true);
+			_chatsAzure = await _azureService.GetChats(useOffline: true);
 			_messageAzure = await _azureService.GetMessages(useOffline: true);
 
-			UpdateChats(chatsAzure, _messageAzure);
+			UpdateChats(_chatsAzure, _messageAzure);
 
 			if (DataReady != null)
                 DataReady(this, EventArgs.Empty);
 
 			_initialized = true;
 
-			chatsAzure = await _azureService.GetChats();
+			_chatsAzure = await _azureService.GetChats();
 			_messageAzure = await _azureService.GetMessages();
 
-			UpdateChats(chatsAzure, _messageAzure);
+			UpdateChats(_chatsAzure, _messageAzure);
 
 			RaiseChangedChats();
 
+			_azureService.NewMessageAvailable += (sender, e) => 
+			{
+				_messageAzure = _azureService.GetMessages(instant: true).Result;
+				UpdateChats(_chatsAzure, _messageAzure);
+				RaiseChangedChats();
+			};
+
 			await CreateChatsWithFriends();
+
+			await UpdateMessages();
 		}
 
 		private void UpdateChats(Tuple<IList<ChatAzure>,IList<ChatUsersAzure>> chatsAzure, IList<MessageAzure> messageAzure)
@@ -246,6 +259,26 @@ namespace LocationMessenger
 					}
 	            }
 	        } 
+		}
+
+		private async Task UpdateMessages()
+		{
+			System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+			sw.Start();
+
+			var countPrev = _messageAzure.Count();
+			_messageAzure = await _azureService.GetMessages();
+
+			if (_messageAzure.Count() > countPrev)
+			{
+				UpdateChats(_chatsAzure, _messageAzure);
+				RaiseChangedChats();
+			}
+
+			sw.Stop();
+			System.Diagnostics.Debug.WriteLine(sw.Elapsed);
+
+			await UpdateMessages();
 		}
 	}
 }

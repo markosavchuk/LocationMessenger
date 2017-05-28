@@ -33,6 +33,8 @@ namespace LocationMessenger
 		private IList<ChatUsersAzure> _chatUsersListFriendsConn { get; set; }
 		private IList<MessageAzure> _messageList { get; set; }
 
+		public event EventHandler NewMessageAvailable;
+
 		public AzureDataService(ILocationService location)
 		{
 			_locationService = location;
@@ -208,9 +210,12 @@ namespace LocationMessenger
 
 		private async Task CheckMessageInArea(bool notification = false)
 		{
+			if (_messageList == null)
+				return;
+			
 			foreach (var msg in _messageList)
 			{
-				if (!msg.Visible)
+				if (!msg.Visible && !msg.OwnerId.Equals(_myId))
 				{
 					if (_locationService.MessageInArea(new Position(msg.Latitude, msg.Longitude)))
 					{
@@ -219,17 +224,21 @@ namespace LocationMessenger
 
 						if (notification)
 						{
-							//notify changes!
+							if (NewMessageAvailable != null)
+								NewMessageAvailable(this, EventArgs.Empty);
 						}
 					}
 				}
 			}
 		}
 
-		public async Task<IList<MessageAzure>> GetMessages(bool syncChats = false, bool useOffline = false)
+		public async Task<IList<MessageAzure>> GetMessages(bool syncChats = false, bool useOffline = false, bool instant = false)
 		{
-			await SyncMessages(syncChats, useOffline);
-			return _messageList.Where(m=>m.Visible)
+			if (!instant)
+			{
+				await SyncMessages(syncChats, useOffline);
+			} 
+			return _messageList.Where(m=>m.Visible || m.OwnerId.Equals(_myId))
 				               .ToList();
 		}
 
@@ -243,7 +252,7 @@ namespace LocationMessenger
 				Text = msgModel.Text,
 				OwnerId = msgModel.Owner.Id,
 				ChatId = chatId,
-				Visible = true
+				//Visible = true
 			};
 
 			await _messageTable.InsertAsync(msgAzure);
